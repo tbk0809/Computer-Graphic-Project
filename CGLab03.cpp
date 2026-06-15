@@ -1,3 +1,153 @@
+/*
+ TCG6223 Computer Graphics
+ Combined CPP: Iron Man + Captain America
+ (C++03 compatible)
+*/
+
+#include <GL/glut.h>
+#include <string>
+#include <fstream>
+#define STB_IMAGE_IMPLEMENTATION
+#include "CGLab03.hpp"
+
+using namespace CGLab03;
+
+void MyVirtualWorld::draw()
+{
+
+    // 1. Camera shake effect
+    glPushMatrix();
+
+        // Iron Man Shake
+        if (imAttacking && imAttackTimer <= 100 && imAttackTimer > 20) {
+            float shakeX = sin(timenew * 0.8f) * 0.7f;
+            float shakeY = cos(timenew * 0.9f) * 0.7f;
+            glTranslatef(shakeX, shakeY, 0.0f);
+        }
+        // Captain America Shake
+        if (caAttacking && caAttackTimer <= 140 && caAttackTimer > 40) {
+            float shakeX = sin(timenew * 1.5f) * 0.8f;
+            float shakeY = cos(timenew * 1.6f) * 0.8f;
+            glTranslatef(shakeX, shakeY, 0.0f);
+        }
+
+        // 2. Battle environment
+        glPushMatrix();
+            glDisable(GL_TEXTURE_2D);
+
+            GLfloat grassColor[] = {0.0f, 1.0f, 1.0f, 1.0f};
+            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, grassColor);
+            glColor3f(0.2f, 0.8f, 0.2f); // Classic Green
+
+            glBegin(GL_QUADS);
+                glNormal3f(0.0f, 1.0f, 0.0f);
+                glVertex3f(-100.0f, -5.0f,  100.0f);
+                glVertex3f( 100.0f, -5.0f,  100.0f);
+                glVertex3f( 100.0f, -5.0f, -100.0f);
+                glVertex3f(-100.0f, -5.0f, -100.0f);
+            glEnd();
+        glPopMatrix();
+
+        // 3. Animation for iron man
+        float animImX = imX; float animImY = imY; float animImZ = imZ;
+        float imTiltX = 0.0f;
+
+        if (imAttacking) {
+            if (imAttackTimer > 200) {
+                float p = (240.0f - imAttackTimer) / 40.0f;
+                animImY += p * 15.0f; imTiltX = p * -10.0f;
+            } else if (imAttackTimer > 100) {
+                float p = (200.0f - imAttackTimer) / 100.0f;
+                animImY += 15.0f + sin(imAttackTimer * 0.05f) * 0.5f;
+                imTiltX = -10.0f + (p * 25.0f);
+            } else if (imAttackTimer > 20) {
+                animImY += 15.0f; imTiltX = -20.0f;
+                float p = (100.0f - imAttackTimer) / 80.0f;
+                animImZ += p * 4.0f;
+            } else {
+                float p = imAttackTimer / 20.0f;
+                animImY += p * 15.0f; imTiltX = p * -20.0f; animImZ += p * 4.0f;
+            }
+        }
+
+        // 4. Animation for Captain America
+        float animCaX = caX; float animCaY = caY; float animCaZ = caZ;
+        float caTiltX = 0.0f; float caRotY = 0.0f;
+
+        if (caAttacking) {
+            if (caAttackTimer > 180) {
+                // Wind up
+                float p = (240.0f - caAttackTimer) / 60.0f;
+                caRotY = p * -30.0f;
+                caTiltX = p * 10.0f;
+                animCaZ -= p * 2.0f;
+            } else if (caAttackTimer > 140) {
+                // Throw
+                float p = (180.0f - caAttackTimer) / 40.0f;
+                caRotY = -30.0f;
+                caTiltX = 10.0f - (p * 30.0f);
+            } else if (caAttackTimer > 40) {
+                // Hold Pose
+                caRotY = -30.0f;
+                caTiltX = -20.0f;
+            } else {
+                // Catch & Recoil
+                float p = caAttackTimer / 40.0f;
+                caRotY = p * -30.0f;
+                caTiltX = (p * -20.0f) + (sin(p * 3.14159f) * 15.0f);
+                animCaZ -= sin(p * 3.14159f) * 4.0f;
+            }
+        }
+
+        // 5. Ironman World Space Effect
+        if (imAttacking) {
+            glDisable(GL_LIGHTING); glDisable(GL_TEXTURE_2D);
+            glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+            float coreX = animImX; float coreY = animImY + 18.0f; float coreZ = animImZ + 1.5f;
+            float targetX = caX; float targetY = caY + 16.0f; float targetZ = caZ;
+
+            if (imAttackTimer > 200) {
+                glPushMatrix();
+                    glTranslatef(animImX, animImY + 2.0f, animImZ + 1.0f);
+                    glColor4f(0.0f, 0.8f, 1.0f, 0.8f);
+                    glutSolidSphere(2.0f + (rand()%10)/10.0f, 16, 16);
+                glPopMatrix();
+            } else if (imAttackTimer > 100) {
+                float p = (200.0f - imAttackTimer) / 100.0f;
+                float chargeSize = p * 3.0f;
+
+                glPushMatrix();
+                    glTranslatef(animImX, -4.8f, animImZ);
+                    glRotatef(timenew * 0.2f, 0, 1, 0);
+                    glColor4f(0.0f, 0.6f, 1.0f, 0.5f);
+                    glutWireTorus(0.5, 8.0f + (p * 2.0f), 4, 32);
+                glPopMatrix();
+
+                glLineWidth(2.0f); glBegin(GL_LINES);
+                for(int i = 0; i < 16; i++) {
+                    float angle = (i * 22.5f) * 3.14159f / 180.0f;
+                    float dist = 12.0f * (1.0f - p) + 2.0f;
+                    float px = cos(angle + timenew * 0.005f) * dist;
+                    float py = sin(angle + timenew * 0.005f) * dist;
+                    glColor4f(0.0f, 0.8f, 1.0f, 0.0f); glVertex3f(coreX + px*1.5, coreY + py*1.5, coreZ - dist);
+                    glColor4f(1.0f, 1.0f, 1.0f, 0.9f); glVertex3f(coreX + px, coreY + py, coreZ - dist*0.5f);
+                }
+                glEnd(); glLineWidth(1.0f);
+
+                glPushMatrix();
+                    glTranslatef(coreX, coreY, coreZ);
+                    glColor4f(1.0f, 1.0f, 1.0f, 1.0f); glutSolidSphere(chargeSize * 0.4f, 16, 16);
+                    glColor4f(0.0f, 0.8f, 1.0f, 0.6f); glutSolidSphere(chargeSize, 16, 16);
+                    glRotatef(imAttackTimer * 25.0f, 0, 1, 0); glRotatef(imAttackTimer * 15.0f, 1, 0, 0);
+                    glColor4f(0.0f, 0.5f, 1.0f, 0.8f); glutWireSphere(chargeSize * 1.2f, 10, 10);
+                glPopMatrix();
+
+            } else if (imAttackTimer > 20) {
+                float dx = targetX - coreX; float dy = targetY - coreY; float dz = targetZ - coreZ;
+                float dist = sqrt(dx*dx + dy*dy + dz*dz);
+                float yaw = atan2(dx, dz) * 180.0f / 3.14159265f;
+                float pitch = atan2(-dy, sqrt(dx*dx + dz*dz)) * 180.0f / 3.14159265f;
 
                 float beamPulse = (sin(timenew * 0.05f) * 0.5f) + 0.5f;
                 float beamRadius = 1.5f + (beamPulse * 0.6f);
