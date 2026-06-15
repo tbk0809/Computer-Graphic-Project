@@ -1,0 +1,229 @@
+# depslib dependency file v1.0
+1710918140 source:e:\adminwork\tcg6223_cg\lab\test\cglab01.cpp
+	<GL/glut.h>
+	<string>
+	<fstream>
+	"CGLab01.hpp"
+
+1710918140 e:\adminwork\tcg6223_cg\lab\test\cglab01.hpp
+	"CGLabmain.hpp"
+	<string>
+	<vector>
+
+1710918140 e:\adminwork\tcg6223_cg\lab\test\cglabmain.hpp
+	<string>
+	<cmath>
+	<iostream>
+	<GL/glut.h>
+
+1711417145 source:e:\adminwork\tcg6223_cg\lab\test\cglabmain.cpp
+	"CGLabxx.hpp"
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cmath>
+	<GL/glut.h>
+	"CGLabmain.hpp"
+	"CGLab01.hpp"
+
+1711418692 source:e:\adminwork\tcg6223_cg\lab\lab 01\cglab01.cpp
+	<GL/glut.h>
+	<string>
+	<fstream>
+	"CGLab01.hpp"
+
+1711419278 e:\adminwork\tcg6223_cg\lab\lab 01\cglab01.hpp
+	"CGLabmain.hpp"
+	<string>
+	<vector>
+
+1711419372 e:\adminwork\tcg6223_cg\lab\lab 01\cglabmain.hpp
+	<string>
+	<cmath>
+	<iostream>
+	<GL/glut.h>
+
+1711418531 source:e:\adminwork\tcg6223_cg\lab\lab 01\cglabmain.cpp
+	"CGLabxx.hpp"
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cmath>
+	<GL/glut.h>
+	"CGLabmain.hpp"
+	"CGLab01.hpp"
+
+1775449579 source:c:\users\user\desktop\com graphics\lab practice-20260328\lab 01\practice01-codeblocks\cglab01.cpp
+	<GL/glut.h>
+	<string>
+	<fstream>
+	"CGLab01.hpp"
+
+1774844772 c:\users\user\desktop\com graphics\lab practice-20260328\lab 01\practice01-codeblocks\cglab01.hpp
+	"CGLabmain.hpp"
+	<string>
+	<vector>
+
+1774844772 c:\users\user\desktop\com graphics\lab practice-20260328\lab 01\practice01-codeblocks\cglabmain.hpp
+	<string>
+	<cmath>
+	<iostream>
+	<GL/glut.h>
+
+1774945061 source:c:\users\user\desktop\com graphics\lab practice-20260328\lab 01\practice01-codeblocks\cglabmain.cpp
+	"CGLabxx.hpp"
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cmath>
+	<GL/glut.h>
+	"CGLabmain.hpp"
+	"CGLab01.hpp"
+
+1775451786 source:c:\users\user\desktop\com graphics\lab practice-20260328\lab 02\practice02-codeblocks\cglabmain.cpp
+	"CGLabxx.hpp"
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cmath>
+	<GL/glut.h>
+	"CGLabmain.hpp"
+	"CGLab02.hpp"
+
+1774844772 c:\users\user\desktop\com graphics\lab practice-20260328\lab 02\practice02-codeblocks\cglabmain.hpp
+	<string>
+	<cmath>
+	<iostream>
+	<GL/glut.h>
+
+1775452515 c:\users\user\desktop\com graphics\lab practice-20260328\lab 02\practice02-codeblocks\cglab02.hpp
+	"CGLabmain.hpp"
+
+1775722716 source:c:\users\user\desktop\com graphics\lab practice-20260328\lab 02\practice02-codeblocks\cglab02.cpp
+	<GL/glut.h>
+	"CGLab02.hpp"
+
+1776053513 source:c:\users\user\desktop\com graphics\lab practice-20260328\lab 03\practice03-codeblocks\cglabmain.cpp
+	"CGLabxx.hpp"
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cmath>
+	<GL/glut.h>
+	"CGLabmain.hpp"
+	"CGLab03.hpp"
+
+1774844772 c:\users\user\desktop\com graphics\lab practice-20260328\lab 03\practice03-codeblocks\cglabmain.hpp
+	<string>
+	<cmath>
+	<iostream>
+	<GL/glut.h>
+
+1776056710 c:\users\user\desktop\com graphics\lab practice-20260328\lab 03\practice03-codeblocks\cglab03.hpp
+	"CGLabmain.hpp"
+
+1776055373 source:c:\users\user\desktop\com graphics\lab practice-20260328\lab 03\practice03-codeblocks\cglab03.cpp
+	<GL/glut.h>
+	"CGLab03.hpp"
+	<cmath>
+	<cstdlib>
+	<ctime>
+
+1781280329 source:c:\users\user\downloads\cg project\cglab03.cpp
+	<GL/glut.h>
+	<string>
+	<fstream>
+	"CGLab03.hpp"
+
+1781282059 c:\users\user\downloads\cg project\cglab03.hpp
+	"CGLabmain.hpp"
+	<string>
+	<vector>
+	<fstream>
+	<sstream>
+	<iostream>
+	<cmath>
+	<map>
+	"stb_image.h"
+
+1781227351 c:\users\user\downloads\cg project\cglabmain.hpp
+	<string>
+	<cmath>
+	<iostream>
+	<GL/glut.h>
+
+1780921871 c:\users\user\downloads\cg project\stb_image.h
+	"stb_image.h"
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<limits.h>
+	<math.h>
+	<stdio.h>
+	<assert.h>
+	<stdint.h>
+	<emmintrin.h>
+	<intrin.h>
+	<arm_neon.h>
+
+1781280178 source:c:\users\user\downloads\cg project\cglabmain.cpp
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cmath>
+	<GL/glut.h>
+	"CGLabmain.hpp"
+	"CGLab03.hpp"
+
+1781524184 source:c:\users\asus\downloads\cg project\cglab03.cpp
+	<GL/glut.h>
+	<string>
+	<fstream>
+	"CGLab03.hpp"
+
+1781524153 c:\users\asus\downloads\cg project\cglab03.hpp
+	"CGLabmain.hpp"
+	<string>
+	<vector>
+	<fstream>
+	<sstream>
+	<iostream>
+	<cmath>
+	<map>
+	"stb_image.h"
+
+1781336216 c:\users\asus\downloads\cg project\cglabmain.hpp
+	<string>
+	<cmath>
+	<iostream>
+	<GL/glut.h>
+
+1781336216 c:\users\asus\downloads\cg project\stb_image.h
+	"stb_image.h"
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<limits.h>
+	<math.h>
+	<stdio.h>
+	<assert.h>
+	<stdint.h>
+	<emmintrin.h>
+	<intrin.h>
+	<arm_neon.h>
+
+1781336216 source:c:\users\asus\downloads\cg project\cglabmain.cpp
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cmath>
+	<GL/glut.h>
+	"CGLabmain.hpp"
+	"CGLab03.hpp"
+
