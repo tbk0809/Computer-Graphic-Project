@@ -370,7 +370,7 @@ public:
 
     // --- Battle variables ---
     int  imHP,  caHP;
-    bool imAttacking, caAttackingShield, caAttackingHammer;
+    bool imAttacking, caAttackingShield, caAttackingHammer, caAttackingSuper;
     int  imAttackTimer, caAttackTimer;
 
     // --- Hand animation ---
@@ -389,7 +389,7 @@ public:
         elapseTime = timenew - timeold;
         timeold    = timenew;
 
-        if (captainHandAutoMode && (caAttackingShield || caAttackingHammer)) {
+        if (captainHandAutoMode && (caAttackingShield || caAttackingHammer || caAttackingSuper)) {
             // Allows the idle arm to sway slightly while attacking
             captainHandAngle = 10.0f * sin(caAttackTimer * 0.08f);
         }
@@ -402,7 +402,7 @@ public:
     }
 
     void moveCaptainHands(float delta) {
-        if (!caAttackingShield && !caAttackingHammer) {
+        if (!caAttackingShield && !caAttackingHammer && !caAttackingSuper) {
             captainHandAngle += delta;
             cout << "[Captain America] Hand angle: " << captainHandAngle << endl;
         }
@@ -560,7 +560,7 @@ public:
         caX = -5.0f; caY = -5.0f; caZ =  15.0f;
 
         imHP = 100; caHP = 100;
-        imAttacking  = false; caAttackingShield = false; caAttackingHammer = false;
+        imAttacking  = false; caAttackingShield = false; caAttackingHammer = false; caAttackingSuper = false;
         imAttackTimer = 0;    caAttackTimer = 0;
 
         captainHandAngle    = 0.0f;

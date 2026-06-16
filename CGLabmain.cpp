@@ -61,7 +61,19 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
 
     case 'a': case 'A': myvirtualworld.imX -= setting.posInc; break;
     case 'd': case 'D': myvirtualworld.imX += setting.posInc; break;
-    case 's': case 'S': myvirtualworld.imZ -= setting.posInc; break;
+    case 's': myvirtualworld.imZ -= setting.posInc; break;
+    case 'S':
+        if (!myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && !myvirtualworld.caAttackingSuper && myvirtualworld.caHP > 0) {
+            myvirtualworld.caAttackingSuper = true;
+            myvirtualworld.caAttackTimer = 540;
+            cout << "\n[Captain America] Casts Thunder Hammer Super!" << endl;
+            if (distance < 18.0f) {
+                myvirtualworld.imHP -= 30;
+                cout << "-> THUNDER HIT! Iron Man HP: " << myvirtualworld.imHP << "/100" << endl;
+                if (myvirtualworld.imHP <= 0) cout << "*** CAPTAIN AMERICA WINS! ***" << endl;
+            } else { cout << "-> MISS! (Too far away)" << endl; }
+        }
+        break;
     case 'w': case 'W': myvirtualworld.imZ += setting.posInc; break;
 
     case 'j': case 'J': myvirtualworld.caX -= setting.posInc; break;
@@ -101,7 +113,7 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
         break;
 
     case 13: // Enter
-        if (!myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && myvirtualworld.caHP > 0) {
+        if (!myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && !myvirtualworld.caAttackingSuper && myvirtualworld.caHP > 0) {
             myvirtualworld.caAttackingShield = true;
             myvirtualworld.caAttackTimer = 240;
             cout << "\n[Captain America] Casts Shield Strike!" << endl;
@@ -115,7 +127,7 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
 
     case 'H': // We handle the lowercase 'h' below, and capital 'H' here (Shift + h).
               // C++ Standard GLUT doesn't detect the 'Shift' key standalone as an event block!
-        if (!myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && myvirtualworld.caHP > 0) {
+        if (!myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && !myvirtualworld.caAttackingSuper && myvirtualworld.caHP > 0) {
             myvirtualworld.caAttackingHammer = true;
             myvirtualworld.caAttackTimer = 240;
             cout << "\n[Captain America] Casts Hammer Strike!" << endl;
@@ -131,7 +143,7 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
  }
 
  // Explicit check to catch lowercase 'h' since we couldn't hook it properly above because of world movement.
- if ((key == 'h' || key == 'H') && !myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && myvirtualworld.caHP > 0) {
+ if ((key == 'h' || key == 'H') && !myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && !myvirtualworld.caAttackingSuper && myvirtualworld.caHP > 0) {
      myvirtualworld.caAttackingHammer = true;
      myvirtualworld.caAttackTimer = 240;
      cout << "\n[Captain America] Casts Hammer Strike!" << endl;
@@ -283,7 +295,7 @@ void myWelcome() {
  cout<<"| Characters:                                                   |\n";
  cout<<"|   Iron Man    -> W/A/S/D to move, SPACE to attack            |\n";
  cout<<"|   Captain Am. -> I/J/K/L to move, ENTER for Shield Attack    |\n";
- cout<<"|                  H (or SHIFT+H) to throw Hammer (Right arm)  |\n";
+ cout<<"|                  H to throw Hammer, S for Hammer Super        |\n";
  cout<<"|                                                               |\n";
  cout<<"| World:                                                        |\n";
  cout<<"|   T/G/F/H/R/Y             => move world                      |\n";
