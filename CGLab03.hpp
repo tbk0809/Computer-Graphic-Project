@@ -352,12 +352,17 @@ public:
     // --- Model loaders ---
     IronManLoader        ironman;
 
-    // Captain America: full model (fallback) OR split body+hands (preferred)
     CaptainAmericaLoader captainamerica;   // full / fallback
     CaptainAmericaLoader captainBody;      // body without arms
     CaptainAmericaLoader captainLeftHand;  // left arm / hand
     CaptainAmericaLoader captainRightHand; // right arm / hand
-    bool                 splitCaptainLoaded; // true when split OBJs loaded
+
+    // Custom Thrown Weapons
+    CaptainAmericaLoader customShield;
+    CaptainAmericaLoader customHammer;
+
+    bool splitCaptainLoaded;
+    bool customWeaponsLoaded;
 
     // --- Position coordinates ---
     float imX, imY, imZ;
@@ -365,12 +370,12 @@ public:
 
     // --- Battle variables ---
     int  imHP,  caHP;
-    bool imAttacking, caAttacking;
+    bool imAttacking, caAttackingShield, caAttackingHammer;
     int  imAttackTimer, caAttackTimer;
 
     // --- Hand animation ---
-    float captainHandAngle;     // current rotation angle of both arms
-    bool  captainHandAutoMode;  // true = auto-swing during attack, false = manual
+    float captainHandAngle;     // current rotation angle of idle arms
+    bool  captainHandAutoMode;
 
     long int timeold, timenew, elapseTime;
 
@@ -384,31 +389,25 @@ public:
         elapseTime = timenew - timeold;
         timeold    = timenew;
 
-        // Auto-swing arms ONLY while CA is attacking
-        if (captainHandAutoMode && caAttacking) {
-            // Oscillate between -30 and +30 degrees driven by caAttackTimer
-            captainHandAngle = 30.0f * sin(caAttackTimer * 0.08f);
+        if (captainHandAutoMode && (caAttackingShield || caAttackingHammer)) {
+            // Allows the idle arm to sway slightly while attacking
+            captainHandAngle = 10.0f * sin(caAttackTimer * 0.08f);
         }
     }
 
-    // Toggle auto hand swing on/off (key '1')
     void toggleCaptainHandAuto() {
         captainHandAutoMode = !captainHandAutoMode;
         cout << "[Captain America] Hand auto-mode: "
              << (captainHandAutoMode ? "ON" : "OFF") << endl;
     }
 
-    // Manual hand angle adjustment (keys '2' / '3') – only when not attacking
     void moveCaptainHands(float delta) {
-        if (!caAttacking) {
+        if (!caAttackingShield && !caAttackingHammer) {
             captainHandAngle += delta;
             cout << "[Captain America] Hand angle: " << captainHandAngle << endl;
         }
     }
 
-    // -----------------------------------------------------------------------
-    //  Utility
-    // -----------------------------------------------------------------------
     static string findFile(const string candidates[], int count) {
         for (int i = 0; i < count; i++) {
             ifstream f(candidates[i].c_str());
@@ -418,9 +417,6 @@ public:
     }
 
 private:
-    // -----------------------------------------------------------------------
-    //  HUD helpers
-    // -----------------------------------------------------------------------
     void drawShadowText(float x, float y, const string& text, float r, float g, float b) {
         glColor3f(0.0f, 0.0f, 0.0f);
         glRasterPos2f(x + 2, y - 2);
@@ -442,9 +438,6 @@ private:
         glEnd();
     }
 
-    // -----------------------------------------------------------------------
-    //  HUD
-    // -----------------------------------------------------------------------
     void drawHUD() {
         int w = glutGet(GLUT_WINDOW_WIDTH);
         int h = glutGet(GLUT_WINDOW_HEIGHT);
@@ -470,12 +463,10 @@ private:
         // Iron Man – top left
         drawShadowText(80, h - 30, "IRON MAN", 1.0f, 0.8f, 0.0f);
 
-        // Arc Reactor icon
         glColor3f(0.4f, 0.4f, 0.4f); drawCircle2D(45, h - 45, 22.0f);
         glColor3f(0.0f, 0.8f, 1.0f); drawCircle2D(45, h - 45, 14.0f);
         glColor3f(1.0f, 1.0f, 1.0f); drawCircle2D(45, h - 45,  6.0f);
 
-        // HP bar background
         glColor3f(0.2f, 0.0f, 0.0f);
         glBegin(GL_QUADS);
             glVertex2f(80,                      h - 60);
@@ -484,7 +475,6 @@ private:
             glVertex2f(95,                      h - 40);
         glEnd();
 
-        // HP bar fill
         glBegin(GL_QUADS);
             glColor3f(0.6f, 0.0f, 0.0f); glVertex2f(80,                         h - 60);
                                           glVertex2f(80 + (displayImHP*hpScale), h - 60);
@@ -492,7 +482,6 @@ private:
                                           glVertex2f(95,                         h - 40);
         glEnd();
 
-        // HP bar border
         glLineWidth(2.0f); glColor3f(0.8f, 0.8f, 0.8f);
         glBegin(GL_LINE_LOOP);
             glVertex2f(80,                   h - 60);
@@ -504,7 +493,6 @@ private:
         // Captain America – top right
         drawShadowText(w - 240, h - 30, "CAPTAIN AMERICA", 1.0f, 0.8f, 0.0f);
 
-        // Shield icon
         glColor3f(0.8f, 0.1f, 0.1f); drawCircle2D(w - 45, h - 45, 22.0f);
         glColor3f(0.9f, 0.9f, 0.9f); drawCircle2D(w - 45, h - 45, 16.0f);
         glColor3f(0.8f, 0.1f, 0.1f); drawCircle2D(w - 45, h - 45, 11.0f);
@@ -512,7 +500,6 @@ private:
 
         float caBaseRight = w - 80;
 
-        // HP bar background
         glColor3f(0.0f, 0.0f, 0.2f);
         glBegin(GL_QUADS);
             glVertex2f(caBaseRight - (100*hpScale),          h - 60);
@@ -521,7 +508,6 @@ private:
             glVertex2f(caBaseRight - 15 - (100*hpScale),     h - 40);
         glEnd();
 
-        // HP bar fill
         glBegin(GL_QUADS);
             glColor3f(0.0f, 0.3f, 0.6f);
             glVertex2f(caBaseRight - (displayCaHP*hpScale),  h - 60);
@@ -531,7 +517,6 @@ private:
             glVertex2f(caBaseRight - 15 - (displayCaHP*hpScale), h - 40);
         glEnd();
 
-        // HP bar border
         glLineWidth(2.0f); glColor3f(0.8f, 0.8f, 0.8f);
         glBegin(GL_LINE_LOOP);
             glVertex2f(caBaseRight - (100*hpScale),      h - 60);
@@ -541,11 +526,9 @@ private:
         glEnd();
         glLineWidth(1.0f);
 
-        // "VS" text
         if (imHP > 0 && caHP > 0)
             drawShadowText(w / 2 - 15, h - 45, "VS", 1.0f, 1.0f, 1.0f);
 
-        // Winner announcement
         if (imHP <= 0 || caHP <= 0) {
             string winText = (imHP <= 0) ? "CAPTAIN AMERICA WINS!" : "IRON MAN WINS!";
             glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -570,33 +553,23 @@ private:
     }
 
 public:
-    // -----------------------------------------------------------------------
-    //  init()
-    // -----------------------------------------------------------------------
     void init() {
         glEnable(GL_LIGHTING);
 
-        // Initial positions
         imX = 10.0f; imY = -5.0f; imZ = -15.0f;
         caX = -5.0f; caY = -5.0f; caZ =  15.0f;
 
-        // Battle stats
         imHP = 100; caHP = 100;
-        imAttacking  = false; caAttacking  = false;
+        imAttacking  = false; caAttackingShield = false; caAttackingHammer = false;
         imAttackTimer = 0;    caAttackTimer = 0;
 
-        // Hand animation defaults
         captainHandAngle    = 0.0f;
-        captainHandAutoMode = true;   // auto-swing enabled by default
+        captainHandAutoMode = true;
         splitCaptainLoaded  = false;
+        customWeaponsLoaded = false;
 
-        // --- Iron Man ---
-        string imModelCandidates[] = {
-            "data/iron.txt","../data/iron.txt","../../data/iron.txt"
-        };
-        string imTexCandidates[] = {
-            "data/Image_0.jpg","../data/Image_0.jpg","../../data/Image_0.jpg"
-        };
+        string imModelCandidates[] = { "data/iron.txt","../data/iron.txt","../../data/iron.txt" };
+        string imTexCandidates[] = { "data/Image_0.jpg","../data/Image_0.jpg","../../data/Image_0.jpg" };
         string imModelPath = findFile(imModelCandidates, 3);
         string imTexPath   = findFile(imTexCandidates,   3);
         if (!imModelPath.empty()) {
@@ -605,7 +578,6 @@ public:
             cerr << "[IronMan] Cannot find iron.txt\n";
         }
 
-        // --- Captain America texture map ---
         struct MatEntry { const char* key; const char* file; };
         MatEntry entries[] = {
             { "Captain_america-Civil_War",  "Captain_america_Civil_War_WP.jpg"  },
@@ -626,44 +598,43 @@ public:
                 if (f.good()) { matToFile[entries[ei].key] = path; break; }
             }
 
-        // --- Captain America: try split OBJs first, fall back to combined ---
-        string caBodyCandidates[] = {
-            "data/captain_body.txt",       "../data/captain_body.txt",
-            "../../data/captain_body.txt"
-        };
-        string caLHandCandidates[] = {
-            "data/captain_lhand.txt",      "../data/captain_lhand.txt",
-            "../../data/captain_lhand.txt"
-        };
-        string caRHandCandidates[] = {
-            "data/captain_rhand.txt",      "../data/captain_rhand.txt",
-            "../../data/captain_rhand.txt"
-        };
+        // Search for specific new names the user uploaded
+        string caBodyCandidates[] = { "data/captainamericabody.txt", "../data/captainamericabody.txt", "../../data/captainamericabody.txt", "captainamericabody.txt" };
+        string caLHandCandidates[] = { "data/Captainlefthand.txt", "../data/Captainlefthand.txt", "../../data/Captainlefthand.txt", "Captainlefthand.txt" };
+        string caRHandCandidates[] = { "data/Captainrighthand.txt", "../data/Captainrighthand.txt", "../../data/Captainrighthand.txt", "Captainrighthand.txt" };
 
-        string caBodyPath  = findFile(caBodyCandidates,  3);
-        string caLHandPath = findFile(caLHandCandidates, 3);
-        string caRHandPath = findFile(caRHandCandidates, 3);
+        string caBodyPath  = findFile(caBodyCandidates,  4);
+        string caLHandPath = findFile(caLHandCandidates, 4);
+        string caRHandPath = findFile(caRHandCandidates, 4);
 
         if (!caBodyPath.empty() && !caLHandPath.empty() && !caRHandPath.empty()) {
-            // Load split models
             captainBody.load(caBodyPath,  matToFile, 12.5f);
             captainLeftHand.load(caLHandPath,  matToFile, 12.5f);
             captainRightHand.load(caRHandPath, matToFile, 12.5f);
             splitCaptainLoaded = true;
             cout << "[CaptainAmerica] Split models loaded.\n";
         } else {
-            // Fall back to combined model
-            string caModelCandidates[] = {
-                "data/Captain_america.txt",    "../data/Captain_america.txt",
-                "../../data/Captain_america.txt", "Captain_america.txt"
-            };
+            string caModelCandidates[] = { "data/Captain_america.txt", "../data/Captain_america.txt", "../../data/Captain_america.txt", "Captain_america.txt" };
             string caModelPath = findFile(caModelCandidates, 4);
             if (!caModelPath.empty()) {
                 captainamerica.load(caModelPath, matToFile, 12.5f);
-                cout << "[CaptainAmerica] Combined model loaded (split OBJs not found).\n";
+                cout << "[CaptainAmerica] Combined model loaded.\n";
             } else {
                 cerr << "[CaptainAmerica] Cannot find any Captain America model.\n";
             }
+        }
+
+        // Custom Weapons loader
+        string shieldCandidates[] = { "data/sheild.txt", "../data/sheild.txt", "../../data/sheild.txt", "sheild.txt" };
+        string hammerCandidates[] = { "data/hammer.txt", "../data/hammer.txt", "../../data/hammer.txt", "hammer.txt" };
+        string shieldPath = findFile(shieldCandidates, 4);
+        string hammerPath = findFile(hammerCandidates, 4);
+
+        if (!shieldPath.empty() && !hammerPath.empty()) {
+            customShield.load(shieldPath, matToFile, 12.5f);
+            customHammer.load(hammerPath, matToFile, 12.5f);
+            customWeaponsLoaded = true;
+            cout << "[Weapons] Custom shield and hammer loaded.\n";
         }
 
         timeold = glutGet(GLUT_ELAPSED_TIME);

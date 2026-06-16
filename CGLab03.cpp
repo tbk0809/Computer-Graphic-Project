@@ -23,8 +23,8 @@ void MyVirtualWorld::draw()
             float shakeY = cos(timenew * 0.9f) * 0.7f;
             glTranslatef(shakeX, shakeY, 0.0f);
         }
-        // Captain America shake
-        if (caAttacking && caAttackTimer <= 140 && caAttackTimer > 40) {
+        // Captain America shake (Shield or Hammer)
+        if ((caAttackingShield || caAttackingHammer) && caAttackTimer <= 140 && caAttackTimer > 40) {
             float shakeX = sin(timenew * 1.5f) * 0.8f;
             float shakeY = cos(timenew * 1.6f) * 0.8f;
             glTranslatef(shakeX, shakeY, 0.0f);
@@ -67,11 +67,11 @@ void MyVirtualWorld::draw()
             }
         }
 
-        // 4. Captain America animation
+        // 4. Captain America animation (Body twist for both attacks)
         float animCaX = caX, animCaY = caY, animCaZ = caZ;
         float caTiltX = 0.0f, caRotY = 0.0f;
 
-        if (caAttacking) {
+        if (caAttackingShield || caAttackingHammer) {
             if (caAttackTimer > 180) {
                 float p = (240.0f - caAttackTimer) / 60.0f;
                 caRotY = p * -30.0f;
@@ -199,9 +199,9 @@ void MyVirtualWorld::draw()
             if (imAttackTimer <= 0) imAttacking = false;
         }
 
-        // 6. Captain America world-space effect
-        if (caAttacking) {
-            float startX  = animCaX - 2.0f, startY  = animCaY + 12.0f, startZ  = animCaZ;
+        // 6a. Captain America world-space effect (SHIELD THROW - LEFT ARM)
+        if (caAttackingShield) {
+            float startX  = animCaX - 3.0f, startY  = animCaY + 12.0f, startZ  = animCaZ;
             float targetX = imX,            targetY  = imY + 18.0f,     targetZ = imZ;
             float currentX = startX, currentY = startY, currentZ = startZ;
             float arcOffset = 0.0f;
@@ -251,9 +251,8 @@ void MyVirtualWorld::draw()
                 currentZ   = startZ  + (targetZ - startZ) * p;
             }
 
-            // Draw flying shield
+            // Draw throwing Shield
             glPushMatrix();
-                glDisable(GL_TEXTURE_2D); glDisable(GL_LIGHTING);
                 glTranslatef(currentX, currentY, currentZ);
 
                 if (caAttackTimer <= 180 && caAttackTimer > 40)
@@ -263,30 +262,117 @@ void MyVirtualWorld::draw()
 
                 glRotatef(25.0f, 1.0f, 0.0f, 0.0f);
 
-                glColor3f(0.8f, 0.1f, 0.1f);
-                glPushMatrix(); glScalef(2.5f, 2.5f, 0.2f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
-                glColor3f(0.9f, 0.9f, 0.9f);
-                glPushMatrix(); glScalef(1.8f, 1.8f, 0.25f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
-                glColor3f(0.1f, 0.3f, 0.8f);
-                glPushMatrix(); glScalef(1.0f, 1.0f, 0.3f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
-
-                if (caAttackTimer <= 180 && caAttackTimer > 40) {
-                    glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                    glColor4f(0.0f, 0.5f, 1.0f, 0.6f);
-                    glutSolidTorus(0.3f, 2.7f, 16, 32);
-                    glDisable(GL_BLEND);
+                if (customWeaponsLoaded) {
+                    customShield.draw();
+                } else {
+                    glDisable(GL_TEXTURE_2D); glDisable(GL_LIGHTING);
+                    glColor3f(0.8f, 0.1f, 0.1f);
+                    glPushMatrix(); glScalef(2.5f, 2.5f, 0.2f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
+                    glColor3f(0.9f, 0.9f, 0.9f);
+                    glPushMatrix(); glScalef(1.8f, 1.8f, 0.25f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
+                    glColor3f(0.1f, 0.3f, 0.8f);
+                    glPushMatrix(); glScalef(1.0f, 1.0f, 0.3f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
+                    glEnable(GL_LIGHTING);
                 }
 
-                glEnable(GL_LIGHTING);
+                if (caAttackTimer <= 180 && caAttackTimer > 40) {
+                    glDisable(GL_LIGHTING); glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    glColor4f(0.0f, 0.5f, 1.0f, 0.6f);
+                    glutSolidTorus(0.3f, 2.7f, 16, 32);
+                    glDisable(GL_BLEND); glEnable(GL_LIGHTING);
+                }
             glPopMatrix();
 
             caAttackTimer--;
-            if (caAttackTimer <= 0) {
-                caAttacking = false;
-                // Reset hand angle after attack finishes
-                captainHandAngle = 0.0f;
-            }
+            if (caAttackTimer <= 0) caAttackingShield = false;
         }
+
+        // 6b. Captain America world-space effect (HAMMER THROW - RIGHT ARM)
+        if (caAttackingHammer) {
+            float startX  = animCaX + 3.0f, startY  = animCaY + 12.0f, startZ  = animCaZ;
+            float targetX = imX,            targetY  = imY + 18.0f,     targetZ = imZ;
+            float currentX = startX, currentY = startY, currentZ = startZ;
+            float arcOffset = 0.0f;
+
+            if (caAttackTimer > 180) {
+                float glow = (sin(timenew * 0.05f) + 1.0f) * 0.5f;
+                glPushMatrix();
+                    glTranslatef(currentX, currentY, currentZ);
+                    glDisable(GL_LIGHTING); glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    glColor4f(1.0f, 0.8f, 0.2f, 0.3f + glow * 0.5f); // Lightning glow
+                    glutSolidSphere(4.0f, 16, 16);
+                    glDisable(GL_BLEND); glEnable(GL_LIGHTING);
+                glPopMatrix();
+
+            } else if (caAttackTimer > 140) {
+                float p = (180.0f - caAttackTimer) / 40.0f;
+                arcOffset  = sin(p * 3.14159f) * 12.0f;
+                currentX   = startX  + (targetX - startX) * p - arcOffset;
+                currentY   = startY  + (targetY - startY) * p + (arcOffset * 0.3f);
+                currentZ   = startZ  + (targetZ - startZ) * p;
+
+            } else if (caAttackTimer > 40) {
+                currentX = targetX; currentY = targetY; currentZ = targetZ - 1.0f;
+
+                glPushMatrix();
+                    glTranslatef(currentX, currentY, currentZ);
+                    glDisable(GL_LIGHTING); glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+                    float wave1Size = fmod((140.0f - caAttackTimer) * 1.5f, 40.0f);
+                    glColor4f(1.0f, 0.9f, 0.2f, 1.0f - (wave1Size / 40.0f));
+                    glutSolidTorus(0.6f, wave1Size, 16, 32);
+
+                    float wave2Size = fmod((140.0f - caAttackTimer) * 1.5f + 20.0f, 40.0f);
+                    glColor4f(1.0f, 0.9f, 0.2f, 1.0f - (wave2Size / 40.0f));
+                    glutSolidTorus(0.6f, wave2Size, 16, 32);
+
+                    glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
+                    glutSolidSphere(4.5f, 16, 16);
+                    glDisable(GL_BLEND); glEnable(GL_LIGHTING);
+                glPopMatrix();
+
+            } else {
+                float p = caAttackTimer / 40.0f;
+                arcOffset  = sin(p * 3.14159f) * 12.0f;
+                currentX   = startX  + (targetX - startX) * p + arcOffset;
+                currentY   = startY  + (targetY - startY) * p + (arcOffset * 0.3f);
+                currentZ   = startZ  + (targetZ - startZ) * p;
+            }
+
+            // Draw throwing Hammer
+            glPushMatrix();
+                glTranslatef(currentX, currentY, currentZ);
+
+                if (caAttackTimer <= 180 && caAttackTimer > 40)
+                    glRotatef(caAttackTimer * 65.0f, 1.0f, 0.0f, 0.0f);
+                else
+                    glRotatef(-30.0f, 1.0f, 0.0f, 0.0f);
+
+                glRotatef(25.0f, 0.0f, 1.0f, 0.0f);
+
+                if (customWeaponsLoaded) {
+                    customHammer.draw();
+                } else {
+                    glDisable(GL_TEXTURE_2D); glDisable(GL_LIGHTING);
+                    glColor3f(0.3f, 0.15f, 0.05f); // Brown Handle
+                    glPushMatrix(); glScalef(0.3f, 3.5f, 0.3f); glutSolidCube(1.0f); glPopMatrix();
+                    glColor3f(0.7f, 0.7f, 0.75f); // Silver Head
+                    glPushMatrix(); glTranslatef(0.0f, 1.75f, 0.0f); glScalef(1.8f, 1.2f, 1.2f); glutSolidCube(1.0f); glPopMatrix();
+                    glEnable(GL_LIGHTING);
+                }
+
+                if (caAttackTimer <= 180 && caAttackTimer > 40) {
+                    glDisable(GL_LIGHTING); glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    glColor4f(1.0f, 1.0f, 0.5f, 0.5f);
+                    glutSolidSphere(2.5f, 16, 16);
+                    glDisable(GL_BLEND); glEnable(GL_LIGHTING);
+                }
+            glPopMatrix();
+
+            caAttackTimer--;
+            if (caAttackTimer <= 0) caAttackingHammer = false;
+        }
+
 
         // 7. Draw characters
         // --- Iron Man ---
@@ -302,35 +388,51 @@ void MyVirtualWorld::draw()
             glRotatef(180, 0, 0, 1);
             glRotatef(180, 1, 0, 0);
 
-            if (caAttacking) {
+            if (caAttackingShield || caAttackingHammer) {
                 glRotatef(caTiltX, 1.0f, 0.0f, 0.0f);
                 glRotatef(caRotY,  0.0f, 1.0f, 0.0f);
             }
 
             if (splitCaptainLoaded) {
-                // Draw body
                 captainBody.draw();
 
-                // Draw left hand – rotated around the shoulder pivot
-                // Pivot offsets tuned to match the Captain America model scale (12.5f)
+                // Dynamic arm pitch calculation to "raise the arm" straight toward Iron Man
+                float armPitch = 0.0f;
+                if (caAttackingShield || caAttackingHammer) {
+                    if (caAttackTimer > 180) {
+                        armPitch = -120.0f * (240.0f - caAttackTimer) / 60.0f; // Windup
+                    } else if (caAttackTimer > 40) {
+                        armPitch = -120.0f; // Hold pose forward
+                    } else {
+                        armPitch = -120.0f * caAttackTimer / 40.0f; // Return arm down
+                    }
+                }
+
+                // Draw left hand (For Shield)
                 glPushMatrix();
                     glTranslatef(-3.0f, 19.6f, -0.5f);
-                    // Apply hand angle ONLY while attacking
-                    glRotatef(caAttacking ? captainHandAngle : 0.0f, 0.0f, 0.0f, 1.0f);
+                    if (caAttackingShield) {
+                        glRotatef(armPitch, 1.0f, 0.0f, 0.0f);
+                    } else {
+                        glRotatef(captainHandAngle, 0.0f, 0.0f, 1.0f);
+                    }
                     glTranslatef(3.0f, -19.6f, 0.5f);
                     captainLeftHand.draw();
                 glPopMatrix();
 
-                // Draw right hand – mirrored rotation
+                // Draw right hand (For Hammer)
                 glPushMatrix();
                     glTranslatef(3.0f, 19.6f, -0.5f);
-                    glRotatef(caAttacking ? -captainHandAngle : 0.0f, 0.0f, 0.0f, 1.0f);
+                    if (caAttackingHammer) {
+                        glRotatef(armPitch, 1.0f, 0.0f, 0.0f);
+                    } else {
+                        glRotatef(-captainHandAngle, 0.0f, 0.0f, 1.0f);
+                    }
                     glTranslatef(-3.0f, -19.6f, 0.5f);
                     captainRightHand.draw();
                 glPopMatrix();
 
             } else {
-                // Fallback: single combined model, no individual hand animation
                 captainamerica.draw();
             }
         glPopMatrix();

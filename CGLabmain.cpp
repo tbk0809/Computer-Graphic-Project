@@ -47,41 +47,32 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
  GLfloat xinc=0,yinc=0,zinc=0;
  bool cameraChanged = false;
 
- // Distance between players for hit detection
  float dx = myvirtualworld.imX - myvirtualworld.caX;
  float dz = myvirtualworld.imZ - myvirtualworld.caZ;
  float distance = sqrt((dx * dx) + (dz * dz));
 
  switch (key) {
-    // --- World movement (T, F, G, H, R, Y) ---
     case 'f': case 'F': xinc=-setting.posInc; break;
-    case 'h': case 'H': xinc= setting.posInc; break;
+    case 'h': /* See fallback below */ break;
     case 'r': case 'R': yinc=-setting.posInc; break;
     case 'y': case 'Y': yinc= setting.posInc; break;
     case 't': case 'T': zinc=-setting.posInc; break;
     case 'g': case 'G': zinc= setting.posInc; break;
 
-    // --- Iron Man movement (W, A, S, D) ---
     case 'a': case 'A': myvirtualworld.imX -= setting.posInc; break;
     case 'd': case 'D': myvirtualworld.imX += setting.posInc; break;
     case 's': case 'S': myvirtualworld.imZ -= setting.posInc; break;
     case 'w': case 'W': myvirtualworld.imZ += setting.posInc; break;
 
-    // --- Captain America movement (I, J, K, L) ---
     case 'j': case 'J': myvirtualworld.caX -= setting.posInc; break;
     case 'l': case 'L': myvirtualworld.caX += setting.posInc; break;
     case 'i': case 'I': myvirtualworld.caZ -= setting.posInc; break;
     case 'k': case 'K': myvirtualworld.caZ += setting.posInc; break;
 
-    // --- Captain America hand controls ---
-    // '1' – toggle auto-swing on/off
-    // '2' – manually rotate hands -5 degrees (only when not attacking)
-    // '3' – manually rotate hands +5 degrees (only when not attacking)
     case '1': myvirtualworld.toggleCaptainHandAuto(); break;
     case '2': myvirtualworld.moveCaptainHands(-5.0f); break;
     case '3': myvirtualworld.moveCaptainHands( 5.0f); break;
 
-    // --- Camera controls (B/V, N/M, Z/X, comma/period, C) ---
     case 'b': case 'B': viewer.eyeX -= 2.0; cameraChanged = true; break;
     case 'v': case 'V': viewer.eyeX += 2.0; cameraChanged = true; break;
     case 'n': case 'N': viewer.eyeY -= 2.0; cameraChanged = true; break;
@@ -96,7 +87,6 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
         cameraChanged = true;
         break;
 
-    // --- Iron Man Skill: Repulsor Blast (Space) ---
     case ' ':
         if (!myvirtualworld.imAttacking && myvirtualworld.imHP > 0) {
             myvirtualworld.imAttacking   = true;
@@ -104,35 +94,54 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
             cout << "\n[Iron Man] Casts Repulsor Blast!" << endl;
             if (distance < 15.0f) {
                 myvirtualworld.caHP -= 15;
-                cout << "-> HIT! Captain America HP: "
-                     << myvirtualworld.caHP << "/100" << endl;
-                if (myvirtualworld.caHP <= 0)
-                    cout << "*** IRON MAN WINS! ***" << endl;
-            } else {
-                cout << "-> MISS! (Too far away)" << endl;
-            }
+                cout << "-> HIT! Captain America HP: " << myvirtualworld.caHP << "/100" << endl;
+                if (myvirtualworld.caHP <= 0) cout << "*** IRON MAN WINS! ***" << endl;
+            } else { cout << "-> MISS! (Too far away)" << endl; }
         }
         break;
 
-    // --- Captain America Skill: Shield Strike (Enter) ---
-    case 13:
-        if (!myvirtualworld.caAttacking && myvirtualworld.caHP > 0) {
-            myvirtualworld.caAttacking   = true;
+    case 13: // Enter
+        if (!myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && myvirtualworld.caHP > 0) {
+            myvirtualworld.caAttackingShield = true;
             myvirtualworld.caAttackTimer = 240;
             cout << "\n[Captain America] Casts Shield Strike!" << endl;
             if (distance < 15.0f) {
                 myvirtualworld.imHP -= 15;
-                cout << "-> HIT! Iron Man HP: "
-                     << myvirtualworld.imHP << "/100" << endl;
-                if (myvirtualworld.imHP <= 0)
-                    cout << "*** CAPTAIN AMERICA WINS! ***" << endl;
-            } else {
-                cout << "-> MISS! (Too far away)" << endl;
-            }
+                cout << "-> HIT! Iron Man HP: " << myvirtualworld.imHP << "/100" << endl;
+                if (myvirtualworld.imHP <= 0) cout << "*** CAPTAIN AMERICA WINS! ***" << endl;
+            } else { cout << "-> MISS! (Too far away)" << endl; }
+        }
+        break;
+
+    case 'H': // We handle the lowercase 'h' below, and capital 'H' here (Shift + h).
+              // C++ Standard GLUT doesn't detect the 'Shift' key standalone as an event block!
+        if (!myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && myvirtualworld.caHP > 0) {
+            myvirtualworld.caAttackingHammer = true;
+            myvirtualworld.caAttackTimer = 240;
+            cout << "\n[Captain America] Casts Hammer Strike!" << endl;
+            if (distance < 15.0f) {
+                myvirtualworld.imHP -= 15;
+                cout << "-> HIT! Iron Man HP: " << myvirtualworld.imHP << "/100" << endl;
+                if (myvirtualworld.imHP <= 0) cout << "*** CAPTAIN AMERICA WINS! ***" << endl;
+            } else { cout << "-> MISS! (Too far away)" << endl; }
         }
         break;
 
     case 27: exit(1); break;
+ }
+
+ // Explicit check to catch lowercase 'h' since we couldn't hook it properly above because of world movement.
+ if ((key == 'h' || key == 'H') && !myvirtualworld.caAttackingShield && !myvirtualworld.caAttackingHammer && myvirtualworld.caHP > 0) {
+     myvirtualworld.caAttackingHammer = true;
+     myvirtualworld.caAttackTimer = 240;
+     cout << "\n[Captain America] Casts Hammer Strike!" << endl;
+     if (distance < 15.0f) {
+         myvirtualworld.imHP -= 15;
+         cout << "-> HIT! Iron Man HP: " << myvirtualworld.imHP << "/100" << endl;
+         if (myvirtualworld.imHP <= 0) cout << "*** CAPTAIN AMERICA WINS! ***" << endl;
+     } else { cout << "-> MISS! (Too far away)" << endl; }
+ } else if (key == 'h') {
+     xinc = setting.posInc; // Fallback mapping for world move if HP dead or busy
  }
 
  world.move(xinc, yinc, zinc);
@@ -273,7 +282,8 @@ void myWelcome() {
  cout<<"*****************************************************************\n";
  cout<<"| Characters:                                                   |\n";
  cout<<"|   Iron Man    -> W/A/S/D to move, SPACE to attack            |\n";
- cout<<"|   Captain Am. -> I/J/K/L to move, ENTER to attack            |\n";
+ cout<<"|   Captain Am. -> I/J/K/L to move, ENTER for Shield Attack    |\n";
+ cout<<"|                  H (or SHIFT+H) to throw Hammer (Right arm)  |\n";
  cout<<"|                                                               |\n";
  cout<<"| World:                                                        |\n";
  cout<<"|   T/G/F/H/R/Y             => move world                      |\n";
