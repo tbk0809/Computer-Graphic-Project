@@ -227,13 +227,13 @@
 	"CGLabmain.hpp"
 	"CGLab03.hpp"
 
-1781540288 source:c:\users\asus\documents\github\computer-graphic-project\cglab03.cpp
+1781577991 source:c:\users\asus\documents\github\computer-graphic-project\cglab03.cpp
 	<GL/glut.h>
 	<string>
 	<fstream>
 	"CGLab03.hpp"
 
-1781540260 c:\users\asus\documents\github\computer-graphic-project\cglab03.hpp
+1781577970 c:\users\asus\documents\github\computer-graphic-project\cglab03.hpp
 	"CGLabmain.hpp"
 	<string>
 	<vector>
@@ -244,7 +244,7 @@
 	<map>
 	"stb_image.h"
 
-1781336216 c:\users\asus\documents\github\computer-graphic-project\cglabmain.hpp
+1781578031 c:\users\asus\documents\github\computer-graphic-project\cglabmain.hpp
 	<string>
 	<cmath>
 	<iostream>
@@ -267,7 +267,7 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1781540231 source:c:\users\asus\documents\github\computer-graphic-project\cglabmain.cpp
+1781578013 source:c:\users\asus\documents\github\computer-graphic-project\cglabmain.cpp
 	<cstdlib>
 	<iostream>
 	<iomanip>

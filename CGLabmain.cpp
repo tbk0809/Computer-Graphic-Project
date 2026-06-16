@@ -46,37 +46,42 @@ void myReshapeFunc(int width, int height) {
 void myKeyboardFunc(unsigned char key, int x, int y) {
  GLfloat xinc=0,yinc=0,zinc=0;
  bool cameraChanged = false;
- // Calculate distance between players for hit detection
+
+ // Distance between players for hit detection
  float dx = myvirtualworld.imX - myvirtualworld.caX;
  float dz = myvirtualworld.imZ - myvirtualworld.caZ;
  float distance = sqrt((dx * dx) + (dz * dz));
+
  switch (key) {
-    // --- WORLD MOVEMENT (T, F, G, H, R, Y)
-    case 'f': case 'F': xinc=-setting.posInc; break; // World Left
-    case 'h': case 'H': xinc= setting.posInc; break; // World Right
-    case 'r': case 'R': yinc=-setting.posInc; break; // World Down
-    case 'y': case 'Y': yinc= setting.posInc; break; // World Up
-    case 't': case 'T': zinc=-setting.posInc; break; // World Forward
-    case 'g': case 'G': zinc= setting.posInc; break; // World Backward
+    // --- World movement (T, F, G, H, R, Y) ---
+    case 'f': case 'F': xinc=-setting.posInc; break;
+    case 'h': case 'H': xinc= setting.posInc; break;
+    case 'r': case 'R': yinc=-setting.posInc; break;
+    case 'y': case 'Y': yinc= setting.posInc; break;
+    case 't': case 'T': zinc=-setting.posInc; break;
+    case 'g': case 'G': zinc= setting.posInc; break;
 
-    // Ironman Movement (W, A, S, D)
-    case 'a': case 'A': myvirtualworld.imX -= setting.posInc; break; // Move Left
-    case 'd': case 'D': myvirtualworld.imX += setting.posInc; break; // Move Right
-    case 's': case 'S': myvirtualworld.imZ -= setting.posInc; break; // Move Forward
-    case 'w': case 'W': myvirtualworld.imZ += setting.posInc; break; // Move Backward
+    // --- Iron Man movement (W, A, S, D) ---
+    case 'a': case 'A': myvirtualworld.imX -= setting.posInc; break;
+    case 'd': case 'D': myvirtualworld.imX += setting.posInc; break;
+    case 's': case 'S': myvirtualworld.imZ -= setting.posInc; break;
+    case 'w': case 'W': myvirtualworld.imZ += setting.posInc; break;
 
-    // Captain America Movement (I, J, K, L)
-    case 'j': case 'J': myvirtualworld.caX -= setting.posInc; break; // Move Left
-    case 'l': case 'L': myvirtualworld.caX += setting.posInc; break; // Move Right
-    case 'i': case 'I': myvirtualworld.caZ -= setting.posInc; break; // Move Forward
-    case 'k': case 'K': myvirtualworld.caZ += setting.posInc; break; // Move Backward
+    // --- Captain America movement (I, J, K, L) ---
+    case 'j': case 'J': myvirtualworld.caX -= setting.posInc; break;
+    case 'l': case 'L': myvirtualworld.caX += setting.posInc; break;
+    case 'i': case 'I': myvirtualworld.caZ -= setting.posInc; break;
+    case 'k': case 'K': myvirtualworld.caZ += setting.posInc; break;
 
-    // Captain America hand movement
+    // --- Captain America hand controls ---
+    // '1' – toggle auto-swing on/off
+    // '2' – manually rotate hands -5 degrees (only when not attacking)
+    // '3' – manually rotate hands +5 degrees (only when not attacking)
     case '1': myvirtualworld.toggleCaptainHandAuto(); break;
     case '2': myvirtualworld.moveCaptainHands(-5.0f); break;
     case '3': myvirtualworld.moveCaptainHands( 5.0f); break;
 
-    // Camera sight controls
+    // --- Camera controls (B/V, N/M, Z/X, comma/period, C) ---
     case 'b': case 'B': viewer.eyeX -= 2.0; cameraChanged = true; break;
     case 'v': case 'V': viewer.eyeX += 2.0; cameraChanged = true; break;
     case 'n': case 'N': viewer.eyeY -= 2.0; cameraChanged = true; break;
@@ -91,62 +96,66 @@ void myKeyboardFunc(unsigned char key, int x, int y) {
         cameraChanged = true;
         break;
 
-    // Ironman Skill 1
-    case ' ': // Spacebar
+    // --- Iron Man Skill: Repulsor Blast (Space) ---
+    case ' ':
         if (!myvirtualworld.imAttacking && myvirtualworld.imHP > 0) {
-            myvirtualworld.imAttacking = true;
+            myvirtualworld.imAttacking   = true;
             myvirtualworld.imAttackTimer = 240;
             cout << "\n[Iron Man] Casts Repulsor Blast!" << endl;
-
             if (distance < 15.0f) {
                 myvirtualworld.caHP -= 15;
-                cout << "-> HIT! Captain America HP: " << myvirtualworld.caHP << "/100" << endl;
-                if (myvirtualworld.caHP <= 0) cout << "*** IRON MAN WINS! ***" << endl;
+                cout << "-> HIT! Captain America HP: "
+                     << myvirtualworld.caHP << "/100" << endl;
+                if (myvirtualworld.caHP <= 0)
+                    cout << "*** IRON MAN WINS! ***" << endl;
             } else {
                 cout << "-> MISS! (Too far away)" << endl;
             }
         }
         break;
 
-    // Captain America Skill 1
+    // --- Captain America Skill: Shield Strike (Enter) ---
     case 13:
         if (!myvirtualworld.caAttacking && myvirtualworld.caHP > 0) {
-            myvirtualworld.caAttacking = true;
+            myvirtualworld.caAttacking   = true;
             myvirtualworld.caAttackTimer = 240;
             cout << "\n[Captain America] Casts Shield Strike!" << endl;
-
             if (distance < 15.0f) {
                 myvirtualworld.imHP -= 15;
-                cout << "-> HIT! Iron Man HP: " << myvirtualworld.imHP << "/100" << endl;
-                if (myvirtualworld.imHP <= 0) cout << "*** CAPTAIN AMERICA WINS! ***" << endl;
+                cout << "-> HIT! Iron Man HP: "
+                     << myvirtualworld.imHP << "/100" << endl;
+                if (myvirtualworld.imHP <= 0)
+                    cout << "*** CAPTAIN AMERICA WINS! ***" << endl;
             } else {
                 cout << "-> MISS! (Too far away)" << endl;
             }
         }
         break;
+
     case 27: exit(1); break;
  }
 
- world.move(xinc,yinc,zinc);
+ world.move(xinc, yinc, zinc);
  if (cameraChanged) myViewingInit();
  glutPostRedisplay();
 }
 
 void mySpecialFunc(int key, int x, int y) {
  switch (key) {
-    case GLUT_KEY_DOWN : world.rotateX-=setting.angleInc; break;
-    case GLUT_KEY_UP   : world.rotateX+=setting.angleInc; break;
-    case GLUT_KEY_LEFT : world.rotateY-=setting.angleInc; break;
-    case GLUT_KEY_RIGHT: world.rotateY+=setting.angleInc; break;
+    case GLUT_KEY_DOWN : world.rotateX -= setting.angleInc; break;
+    case GLUT_KEY_UP   : world.rotateX += setting.angleInc; break;
+    case GLUT_KEY_LEFT : world.rotateY -= setting.angleInc; break;
+    case GLUT_KEY_RIGHT: world.rotateY += setting.angleInc; break;
     case GLUT_KEY_HOME : myDataInit(); break;
     case GLUT_KEY_F1:
-        setting.shadingMode=!setting.shadingMode;
-        glPolygonMode(GL_FRONT_AND_BACK, setting.shadingMode?GL_FILL:GL_LINE);
+        setting.shadingMode = !setting.shadingMode;
+        glPolygonMode(GL_FRONT_AND_BACK, setting.shadingMode ? GL_FILL : GL_LINE);
         break;
     case GLUT_KEY_F2: worldaxis.toggle(); break;
     case GLUT_KEY_F3: {
-        GLboolean on; glGetBooleanv(GL_LIGHTING,&on);
-        if (on==GL_TRUE) glDisable(GL_LIGHTING); else glEnable(GL_LIGHTING);
+        GLboolean on; glGetBooleanv(GL_LIGHTING, &on);
+        if (on == GL_TRUE) glDisable(GL_LIGHTING);
+        else               glEnable(GL_LIGHTING);
         break;
     }
     case GLUT_KEY_PAGE_UP:
@@ -164,7 +173,7 @@ void mySpecialFunc(int key, int x, int y) {
 }
 
 void myMouseFunc(int button, int state, int x, int y) {
- y=window.height-y;
+ y = window.height - y;
  switch (button) {
     case GLUT_RIGHT_BUTTON:
         if (state==GLUT_DOWN && !setting.mouseRightMode) { setting.mouseX=x; setting.mouseY=y; setting.mouseRightMode=true; }
@@ -178,11 +187,11 @@ void myMouseFunc(int button, int state, int x, int y) {
 }
 
 void myMotionFunc(int x, int y) {
- y=window.height-y;
- GLint xinc=x-setting.mouseX, yinc=y-setting.mouseY;
- if (setting.mouseRightMode) world.rotate(0,0,-xinc*0.5f);
- if (setting.mouseLeftMode)  world.rotate(-yinc*0.5f,xinc*0.5f,0);
- setting.mouseX=x; setting.mouseY=y;
+ y = window.height - y;
+ GLint xinc = x - setting.mouseX, yinc = y - setting.mouseY;
+ if (setting.mouseRightMode) world.rotate(0, 0, -xinc*0.5f);
+ if (setting.mouseLeftMode)  world.rotate(-yinc*0.5f, xinc*0.5f, 0);
+ setting.mouseX = x; setting.mouseY = y;
  glutPostRedisplay();
 }
 
@@ -193,15 +202,13 @@ void myDataInit() {
  world.posX=world.posY=world.posZ=0;
  world.scaleX=world.scaleY=world.scaleZ=1;
 
- viewer.eyeX=0;
- viewer.eyeY=20;
- viewer.eyeZ=80;
-
+ viewer.eyeX=0; viewer.eyeY=20; viewer.eyeZ=80;
  viewer.centerX=viewer.centerY=viewer.centerZ=0;
  viewer.upX=0; viewer.upY=1; viewer.upZ=0;
  viewer.zNear=0.1; viewer.zFar=500;
  viewer.fieldOfView=60;
  viewer.aspectRatio=(GLdouble)window.width/window.height;
+
  setting.posInc=1.0; setting.angleInc=2.0;
  setting.mouseX=setting.mouseY=0;
  setting.mouseRightMode=setting.mouseLeftMode=false;
@@ -210,38 +217,49 @@ void myDataInit() {
 
 void myViewingInit() {
  glMatrixMode(GL_PROJECTION); glLoadIdentity();
- gluPerspective(viewer.fieldOfView,viewer.aspectRatio,viewer.zNear,viewer.zFar);
+ gluPerspective(viewer.fieldOfView, viewer.aspectRatio, viewer.zNear, viewer.zFar);
  glMatrixMode(GL_MODELVIEW); glLoadIdentity();
- gluLookAt(viewer.eyeX,viewer.eyeY,viewer.eyeZ, viewer.centerX,viewer.centerY,viewer.centerZ, viewer.upX,viewer.upY,viewer.upZ);
+ gluLookAt(viewer.eyeX, viewer.eyeY, viewer.eyeZ,
+           viewer.centerX, viewer.centerY, viewer.centerZ,
+           viewer.upX, viewer.upY, viewer.upZ);
 }
 
 void myLightingInit() {
- static GLfloat ambient[] ={0,0,0,1}, diffuse[]={1,1,1,1}, specular[]={1,1,1,1}, specref[]={1,1,1,1}, position[]={10,10,10,1};
- short shininess=128;
+ static GLfloat ambient[]  = {0,0,0,1}, diffuse[]  = {1,1,1,1};
+ static GLfloat specular[] = {1,1,1,1}, specref[]  = {1,1,1,1};
+ static GLfloat position[] = {10,10,10,1};
+ short shininess = 128;
  glDisable(GL_LIGHTING);
- glLightfv(GL_LIGHT0,GL_AMBIENT,ambient); glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuse);
- glLightfv(GL_LIGHT0,GL_SPECULAR,specular); glLightfv(GL_LIGHT0,GL_POSITION,position);
+ glLightfv(GL_LIGHT0, GL_AMBIENT,  ambient);
+ glLightfv(GL_LIGHT0, GL_DIFFUSE,  diffuse);
+ glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+ glLightfv(GL_LIGHT0, GL_POSITION, position);
  glEnable(GL_LIGHT0);
- glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE); glEnable(GL_COLOR_MATERIAL);
- glMaterialfv(GL_FRONT,GL_SPECULAR,specref); glMateriali(GL_FRONT,GL_SHININESS,shininess);
+ glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+ glEnable(GL_COLOR_MATERIAL);
+ glMaterialfv(GL_FRONT, GL_SPECULAR,  specref);
+ glMateriali (GL_FRONT, GL_SHININESS, shininess);
  glEnable(GL_NORMALIZE);
 }
 
 void myInit() {
  myDataInit();
  glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
- glutInitWindowPosition(window.posX,window.posY);
- glutInitWindowSize(window.width,window.height);
+ glutInitWindowPosition(window.posX, window.posY);
+ glutInitWindowSize(window.width, window.height);
  glutCreateWindow(window.title.c_str());
- glutDisplayFunc(myDisplayFunc); glutReshapeFunc(myReshapeFunc);
- glutKeyboardFunc(myKeyboardFunc); glutSpecialFunc(mySpecialFunc);
- glutMotionFunc(myMotionFunc); glutMouseFunc(myMouseFunc);
+ glutDisplayFunc(myDisplayFunc);
+ glutReshapeFunc(myReshapeFunc);
+ glutKeyboardFunc(myKeyboardFunc);
+ glutSpecialFunc(mySpecialFunc);
+ glutMotionFunc(myMotionFunc);
+ glutMouseFunc(myMouseFunc);
  glPointSize(4);
  glEnable(GL_DEPTH_TEST); glDepthFunc(GL_LESS);
- glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+ glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
  glFrontFace(GL_CCW); glShadeModel(GL_SMOOTH);
  glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
- glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+ glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
  glEnable(GL_CULL_FACE);
  myViewingInit();
  myLightingInit();
@@ -253,23 +271,31 @@ void myWelcome() {
  cout<<"*                   TCG6223 Computer Graphics                   *\n";
  cout<<"*                  FIST, Multimedia University                  *\n";
  cout<<"*****************************************************************\n";
- cout<<"| Press:                                                        |\n";
- cout<<"|   <a>,<d>,<w>,<s>,<q>,<e> => move world                       |\n";
- cout<<"|   <arrows>                => rotate world                     |\n";
+ cout<<"| Characters:                                                   |\n";
+ cout<<"|   Iron Man    -> W/A/S/D to move, SPACE to attack            |\n";
+ cout<<"|   Captain Am. -> I/J/K/L to move, ENTER to attack            |\n";
+ cout<<"|                                                               |\n";
+ cout<<"| World:                                                        |\n";
+ cout<<"|   T/G/F/H/R/Y             => move world                      |\n";
+ cout<<"|   Arrow keys              => rotate world                     |\n";
  cout<<"|   HOME                    => restore defaults                 |\n";
  cout<<"|   ESC                     => exit                             |\n";
  cout<<"|                                                               |\n";
- cout<<"|   F1                      => toggle shading / wire-frame mode |\n";
- cout<<"|   F2                      => toggle rendering of axes         |\n";
- cout<<"|   F3                      => toggle lighting on / off         |\n";
- cout<<"|   1,2,3                   => Captain hand auto/manual move    |\n";
- cout<<"|   B,V / N,M / Z,X         => move camera left/up/zoom         |\n";
- cout<<"|   <,> / PgUp,PgDn / C     => look up/down, FOV, reset camera  |\n";
+ cout<<"| Captain America Hands (split model only):                     |\n";
+ cout<<"|   1  => toggle auto-swing on/off (swings during attack only)  |\n";
+ cout<<"|   2  => manual arm angle -5 deg (when not attacking)          |\n";
+ cout<<"|   3  => manual arm angle +5 deg (when not attacking)          |\n";
  cout<<"|                                                               |\n";
- cout<<"| Mouse (Left Drag or Right Drag) => rotate world               |\n";
+ cout<<"| Camera:                                                       |\n";
+ cout<<"|   B/V => camera left/right  N/M => camera down/up            |\n";
+ cout<<"|   Z/X => zoom in/out        C   => reset camera               |\n";
+ cout<<"|   ,/. => look down/up   PgUp/Dn => FOV narrow/wide           |\n";
  cout<<"|                                                               |\n";
+ cout<<"| Toggles:                                                      |\n";
+ cout<<"|   F1 => wireframe  F2 => axes  F3 => lighting                |\n";
+ cout<<"|   Mouse drag (L/R) => rotate world                            |\n";
  cout<<"*****************************************************************\n";
- cout<<"|                      H A V E   F U N  !!!                     |\n";
+ cout<<"|                      H A V E   F U N  !!!                    |\n";
  cout<<"*****************************************************************\n";
 }
 
