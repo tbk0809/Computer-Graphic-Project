@@ -227,7 +227,7 @@
 	"CGLabmain.hpp"
 	"CGLab03.hpp"
 
-1781677054 source:c:\users\asus\documents\github\computer-graphic-project\cglab03.cpp
+1781683965 source:c:\users\asus\documents\github\computer-graphic-project\cglab03.cpp
 	<GL/glut.h>
 	<string>
 	<fstream>

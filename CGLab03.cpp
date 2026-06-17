@@ -140,7 +140,7 @@ void MyVirtualWorld::draw()
         // The weapon files have their mesh centers far away from 0,0,0.
         // These local anchors let the props inherit Captain America's arm transforms.
         const float shieldCenterX =  9.1f,  shieldCenterY =  5.4f,  shieldCenterZ = -15.0f;
-        const float hammerCenterX = -10.5f, hammerCenterY = 13.4f, hammerCenterZ = -15.0f;
+        const float hammerCenterX = -10.5f, hammerCenterY = 13.4f, hammerCenterZ = -5.0f;
         const float hammerGripX   = -10.5f, hammerGripY   = 10.8f, hammerGripZ   = 0.0f;
 
         const float shieldAttachX = -4.35f, shieldAttachY = 7.7f, shieldAttachZ = -0.95f;
@@ -149,8 +149,8 @@ void MyVirtualWorld::draw()
         // 6a. Captain America Shield Flight Effect (right hand after the weapon swap)
         if (caAttackingShield) {
             if (caAttackTimer <= 180 && caAttackTimer > 40) {
-                float startX = animCaX + 3.0f, startY = animCaY + 12.0f, startZ = animCaZ;
-                float targetX = imX, targetY = imY + 18.0f, targetZ = imZ;
+                float startX = animCaX + 3.0f, startY = animCaY + 28.0f, startZ = animCaZ;
+                float targetX = imX, targetY = imY + 28.0f, targetZ = imZ;
                 float currentX = startX, currentY = startY, currentZ = startZ;
 
                 if (caAttackTimer > 120) {
@@ -171,15 +171,18 @@ void MyVirtualWorld::draw()
 
                 glPushMatrix();
                     glTranslatef(currentX, currentY, currentZ);
-                    if (customWeaponsLoaded) {
-                        glTranslatef(-shieldCenterX, -shieldCenterY, -shieldCenterZ);
-                        customShield.draw();
-                    } else {
-                        glDisable(GL_TEXTURE_2D); glDisable(GL_LIGHTING);
-                        glColor3f(0.8f, 0.1f, 0.1f);
-                        glPushMatrix(); glScalef(2.5f, 2.5f, 0.2f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
-                        glEnable(GL_LIGHTING);
-                    }
+                    glPushMatrix();
+                        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+                        if (customWeaponsLoaded) {
+                            glTranslatef(-shieldCenterX, -shieldCenterY, -shieldCenterZ);
+                            customShield.draw();
+                        } else {
+                            glDisable(GL_TEXTURE_2D); glDisable(GL_LIGHTING);
+                            glColor3f(0.8f, 0.1f, 0.1f);
+                            glPushMatrix(); glScalef(2.5f, 2.5f, 0.2f); glutSolidSphere(1.0, 16, 16); glPopMatrix();
+                            glEnable(GL_LIGHTING);
+                        }
+                    glPopMatrix();
                 glPopMatrix();
             }
 
@@ -214,17 +217,19 @@ void MyVirtualWorld::draw()
 
                 glPushMatrix();
                     glTranslatef(currentX, currentY, currentZ);
-                    glRotatef(caAttackTimer * 75.0f, 1.0f, 0.0f, 0.0f);
-                    glRotatef(25.0f, 0.0f, 1.0f, 0.0f);
-                    if (customWeaponsLoaded) {
-                        glTranslatef(-hammerCenterX, -hammerCenterY, -hammerCenterZ);
-                        customHammer.draw();
-                    } else {
-                        glDisable(GL_TEXTURE_2D); glDisable(GL_LIGHTING);
-                        glColor3f(0.7f, 0.7f, 0.75f);
-                        glPushMatrix(); glScalef(1.8f, 1.2f, 1.2f); glutSolidCube(1.0f); glPopMatrix();
-                        glEnable(GL_LIGHTING);
-                    }
+                    glPushMatrix();
+                        glRotatef(caAttackTimer * 32.0f, 1.0f, 0.0f, 0.0f);
+                        glRotatef(14.0f, 0.0f, 1.0f, 0.0f);
+                        if (customWeaponsLoaded) {
+                            glTranslatef(-hammerCenterX, -hammerCenterY, -hammerCenterZ);
+                            customHammer.draw();
+                        } else {
+                            glDisable(GL_TEXTURE_2D); glDisable(GL_LIGHTING);
+                            glColor3f(0.7f, 0.7f, 0.75f);
+                            glPushMatrix(); glScalef(1.8f, 1.2f, 1.2f); glutSolidCube(1.0f); glPopMatrix();
+                            glEnable(GL_LIGHTING);
+                        }
+                    glPopMatrix();
                 glPopMatrix();
 
                 if (caAttackingSuper && caAttackTimer <= 120 && caAttackTimer > 80) {
@@ -233,11 +238,31 @@ void MyVirtualWorld::draw()
                     glLineWidth(3.0f);
                     glColor4f(0.5f, 0.9f, 1.0f, 0.9f);
                     glBegin(GL_LINES);
-                        glVertex3f(imX, imY + 28.0f, imZ); glVertex3f(imX - 2.0f, imY + 20.0f, imZ + 1.0f);
-                        glVertex3f(imX - 2.0f, imY + 20.0f, imZ + 1.0f); glVertex3f(imX + 1.5f, imY + 13.0f, imZ - 1.0f);
-                        glVertex3f(imX + 1.5f, imY + 13.0f, imZ - 1.0f); glVertex3f(imX, imY + 6.0f, imZ);
-                        glVertex3f(imX + 3.0f, imY + 24.0f, imZ - 2.0f); glVertex3f(imX - 1.0f, imY + 16.0f, imZ + 2.0f);
+                        glVertex3f(imX - 1.0f, imY + 30.0f, imZ - 0.5f); glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f);
+                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f);
+                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f);
+                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f);
+                        glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f); glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f);
+                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX + 5.0f, imY + 21.5f, imZ - 1.8f);
+                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX - 5.2f, imY + 17.5f, imZ + 2.1f);
+                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f);
                     glEnd();
+                    if (caAttackTimer <= 104 && caAttackTimer > 96) {
+                        glColor4f(0.9f, 1.0f, 1.0f, 0.95f);
+                        glPushMatrix();
+                            glTranslatef(imX, imY + 7.0f, imZ);
+                            glutSolidSphere(4.2f, 24, 12);
+                        glPopMatrix();
+
+                        glLineWidth(5.0f);
+                        glColor4f(0.7f, 0.95f, 1.0f, 0.95f);
+                        glBegin(GL_LINES);
+                            glVertex3f(imX - 6.5f, imY + 7.0f, imZ); glVertex3f(imX + 6.5f, imY + 7.0f, imZ);
+                            glVertex3f(imX, imY + 0.5f, imZ); glVertex3f(imX, imY + 13.5f, imZ);
+                            glVertex3f(imX - 4.5f, imY + 2.5f, imZ + 2.0f); glVertex3f(imX + 4.5f, imY + 11.5f, imZ - 2.0f);
+                            glVertex3f(imX - 4.5f, imY + 11.5f, imZ - 2.0f); glVertex3f(imX + 4.5f, imY + 2.5f, imZ + 2.0f);
+                        glEnd();
+                    }
                     glLineWidth(1.0f);
                     glDisable(GL_BLEND); glEnable(GL_LIGHTING);
                 }
@@ -297,10 +322,10 @@ void MyVirtualWorld::draw()
                 // LEFT HAND (Holds Hammer after swap)
                 // ==========================================
                 glPushMatrix();
-                    glTranslatef(-3.0f, 19.6f, -0.5f);
+                    glTranslatef(-2.35f, 18.8f, -0.35f);
                     if (caAttackingHammer || caAttackingSuper) glRotatef(leftArmPitch, 1.0f, 0.0f, 0.0f);
                     else glRotatef(captainHandAngle, 0.0f, 0.0f, 1.0f);
-                    glTranslatef(3.0f, -19.6f, 0.5f);
+                    glTranslatef(2.35f, -18.8f, 0.35f);
 
                     captainLeftHand.draw();
 
@@ -334,10 +359,10 @@ void MyVirtualWorld::draw()
                 // RIGHT HAND (Holds Shield after swap)
                 // ==========================================
                 glPushMatrix();
-                    glTranslatef(3.0f, 19.6f, -0.5f);
+                    glTranslatef(2.35f, 18.8f, -0.35f);
                     if (caAttackingShield) glRotatef(rightArmPitch, 1.0f, 0.0f, 0.0f);
                     else glRotatef(-captainHandAngle, 0.0f, 0.0f, 1.0f);
-                    glTranslatef(-3.0f, -19.6f, 0.5f);
+                    glTranslatef(-2.35f, -18.8f, 0.35f);
 
                     captainRightHand.draw();
 
