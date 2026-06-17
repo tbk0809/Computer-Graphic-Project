@@ -554,4 +554,81 @@ void MyVirtualWorld::draw()
     drawHUD();
 }
 
+void MyVirtualWorld::drawSkybox(float camX, float camY, float camZ)
+{
+    glDisable(GL_LIGHTING);
+    glDepthMask(GL_FALSE);
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
+    glPushMatrix();
+    glTranslatef(camX, camY, camZ);
+    float s = 250.0f; // size of skybox
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    // Front Face (z = -s) -> Daylight Box_Front
+    if (skyboxTextureIDs[4]) {
+        glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[4]);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s, -s, -s);
+            glTexCoord2f(1.0f, 0.0f); glVertex3f( s, -s, -s);
+            glTexCoord2f(1.0f, 1.0f); glVertex3f( s,  s, -s);
+            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s,  s, -s);
+        glEnd();
+    }
+    // Back Face (z = s) -> Daylight Box_Back
+    if (skyboxTextureIDs[5]) {
+        glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[5]);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 0.0f); glVertex3f( s, -s,  s);
+            glTexCoord2f(1.0f, 0.0f); glVertex3f(-s, -s,  s);
+            glTexCoord2f(1.0f, 1.0f); glVertex3f(-s,  s,  s);
+            glTexCoord2f(0.0f, 1.0f); glVertex3f( s,  s,  s);
+        glEnd();
+    }
+    // Left Face (x = -s) -> Daylight Box_Left
+    if (skyboxTextureIDs[1]) {
+        glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[1]);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s, -s,  s);
+            glTexCoord2f(1.0f, 0.0f); glVertex3f(-s, -s, -s);
+            glTexCoord2f(1.0f, 1.0f); glVertex3f(-s,  s, -s);
+            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s,  s,  s);
+        glEnd();
+    }
+    // Right Face (x = s) -> Daylight Box_Right
+    if (skyboxTextureIDs[0]) {
+        glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[0]);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 0.0f); glVertex3f( s, -s, -s);
+            glTexCoord2f(1.0f, 0.0f); glVertex3f( s, -s,  s);
+            glTexCoord2f(1.0f, 1.0f); glVertex3f( s,  s,  s);
+            glTexCoord2f(0.0f, 1.0f); glVertex3f( s,  s, -s);
+        glEnd();
+    }
+    // Top Face (y = s) -> Daylight Box_Top
+    if (skyboxTextureIDs[2]) {
+        glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[2]);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s,  s, -s);
+            glTexCoord2f(1.0f, 1.0f); glVertex3f( s,  s, -s);
+            glTexCoord2f(1.0f, 0.0f); glVertex3f( s,  s,  s);
+            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s,  s,  s);
+        glEnd();
+    }
+    // Bottom Face (y = -s) -> Daylight Box_Bottom
+    if (skyboxTextureIDs[3]) {
+        glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[3]);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s, -s, -s);
+            glTexCoord2f(1.0f, 0.0f); glVertex3f( s, -s, -s);
+            glTexCoord2f(1.0f, 1.0f); glVertex3f( s, -s,  s);
+            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s, -s,  s);
+        glEnd();
+    }
+
+    glPopMatrix();
+    
+    glDepthMask(GL_TRUE);
+    glEnable(GL_LIGHTING);
+}

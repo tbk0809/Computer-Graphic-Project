@@ -21,6 +21,7 @@ MyAxis     worldaxis;
 
 void myDisplayFunc(void) {
  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+ myvirtualworld.drawSkybox(viewer.eyeX, viewer.eyeY, viewer.eyeZ);
  glPushMatrix();
     glTranslatef(world.posX, world.posY, world.posZ);
     glRotatef(world.rotateX, 1,0,0);

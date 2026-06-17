@@ -376,6 +376,7 @@ public:
     float  imAttackTimer, caAttackTimer;
 
     GLuint grassTextureID;
+    GLuint skyboxTextureIDs[6];
 
     // --- Hand animation ---
     float captainHandAngle;     // current rotation angle of idle arms
@@ -387,6 +388,7 @@ public:
     //  Public API
     // -----------------------------------------------------------------------
     void draw();
+    void drawSkybox(float camX, float camY, float camZ);
 
     void tickTime() {
         timenew    = glutGet(GLUT_ELAPSED_TIME);
@@ -567,6 +569,8 @@ public:
         imHP = 100; caHP = 100;
         imAttacking  = false; caAttackingShield = false; caAttackingHammer = false; caAttackingSuper = false;
         imAttackTimer = 0.0f; caAttackTimer = 0.0f; // 【修改】初始化为 0.0f
+        grassTextureID = 0;
+        for (int i = 0; i < 6; i++) skyboxTextureIDs[i] = 0;
 
         captainHandAngle    = 0.0f;
         captainHandAutoMode = true;
@@ -666,6 +670,40 @@ public:
             }
         } else {
             cerr << "[World] WARNING: Grass texture file not found.\n";
+        }
+
+        // --- Load skybox textures ---
+        string skyFaces[6] = {
+            "sky_box_texture/Daylight Box_Right.jpg",
+            "sky_box_texture/Daylight Box_Left.jpg",
+            "sky_box_texture/Daylight Box_Top.jpg",
+            "sky_box_texture/Daylight Box_Bottom.jpg",
+            "sky_box_texture/Daylight Box_Front.jpg",
+            "sky_box_texture/Daylight Box_Back.jpg"
+        };
+        for (int i = 0; i < 6; i++) {
+            string faceCandidates[] = { skyFaces[i], "../" + skyFaces[i], "../../" + skyFaces[i] };
+            string facePath = findFile(faceCandidates, 3);
+            if (!facePath.empty()) {
+                int w, h, ch;
+                stbi_set_flip_vertically_on_load(true); // Flip vertically to match OpenGL coordinate system
+                unsigned char* data = stbi_load(facePath.c_str(), &w, &h, &ch, 0);
+                if (data) {
+                    GLenum fmt = (ch == 4) ? GL_RGBA : GL_RGB;
+                    glGenTextures(1, &skyboxTextureIDs[i]);
+                    glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[i]);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+                    glTexImage2D(GL_TEXTURE_2D, 0, fmt, w, h, 0, fmt, GL_UNSIGNED_BYTE, data);
+                    stbi_image_free(data);
+                } else {
+                    cerr << "[World] WARNING: Failed to decode skybox texture: " << facePath << "\n";
+                }
+            } else {
+                cerr << "[World] WARNING: Skybox texture file not found: " << skyFaces[i] << "\n";
+            }
         }
 
         timeold = glutGet(GLUT_ELAPSED_TIME);
