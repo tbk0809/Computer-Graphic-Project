@@ -566,64 +566,68 @@ void MyVirtualWorld::drawSkybox(float camX, float camY, float camZ)
     float s = 250.0f; // size of skybox
     glColor3f(1.0f, 1.0f, 1.0f);
 
+    // Inset texture coordinates slightly to hide black seams caused by GL_CLAMP
+    float u0 = 0.002f, u1 = 0.998f;
+    float v0 = 0.002f, v1 = 0.998f;
+
     // Front Face (z = -s) -> Daylight Box_Front
     if (skyboxTextureIDs[4]) {
         glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[4]);
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s, -s, -s);
-            glTexCoord2f(1.0f, 0.0f); glVertex3f( s, -s, -s);
-            glTexCoord2f(1.0f, 1.0f); glVertex3f( s,  s, -s);
-            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s,  s, -s);
+            glTexCoord2f(u0, v0); glVertex3f(-s, -s, -s);
+            glTexCoord2f(u1, v0); glVertex3f( s, -s, -s);
+            glTexCoord2f(u1, v1); glVertex3f( s,  s, -s);
+            glTexCoord2f(u0, v1); glVertex3f(-s,  s, -s);
         glEnd();
     }
     // Back Face (z = s) -> Daylight Box_Back
     if (skyboxTextureIDs[5]) {
         glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[5]);
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f); glVertex3f( s, -s,  s);
-            glTexCoord2f(1.0f, 0.0f); glVertex3f(-s, -s,  s);
-            glTexCoord2f(1.0f, 1.0f); glVertex3f(-s,  s,  s);
-            glTexCoord2f(0.0f, 1.0f); glVertex3f( s,  s,  s);
+            glTexCoord2f(u0, v0); glVertex3f( s, -s,  s);
+            glTexCoord2f(u1, v0); glVertex3f(-s, -s,  s);
+            glTexCoord2f(u1, v1); glVertex3f(-s,  s,  s);
+            glTexCoord2f(u0, v1); glVertex3f( s,  s,  s);
         glEnd();
     }
     // Left Face (x = -s) -> Daylight Box_Left
     if (skyboxTextureIDs[1]) {
         glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[1]);
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s, -s,  s);
-            glTexCoord2f(1.0f, 0.0f); glVertex3f(-s, -s, -s);
-            glTexCoord2f(1.0f, 1.0f); glVertex3f(-s,  s, -s);
-            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s,  s,  s);
+            glTexCoord2f(u0, v0); glVertex3f(-s, -s,  s);
+            glTexCoord2f(u1, v0); glVertex3f(-s, -s, -s);
+            glTexCoord2f(u1, v1); glVertex3f(-s,  s, -s);
+            glTexCoord2f(u0, v1); glVertex3f(-s,  s,  s);
         glEnd();
     }
     // Right Face (x = s) -> Daylight Box_Right
     if (skyboxTextureIDs[0]) {
         glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[0]);
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f); glVertex3f( s, -s, -s);
-            glTexCoord2f(1.0f, 0.0f); glVertex3f( s, -s,  s);
-            glTexCoord2f(1.0f, 1.0f); glVertex3f( s,  s,  s);
-            glTexCoord2f(0.0f, 1.0f); glVertex3f( s,  s, -s);
+            glTexCoord2f(u0, v0); glVertex3f( s, -s, -s);
+            glTexCoord2f(u1, v0); glVertex3f( s, -s,  s);
+            glTexCoord2f(u1, v1); glVertex3f( s,  s,  s);
+            glTexCoord2f(u0, v1); glVertex3f( s,  s, -s);
         glEnd();
     }
     // Top Face (y = s) -> Daylight Box_Top
     if (skyboxTextureIDs[2]) {
         glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[2]);
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s,  s, -s);
-            glTexCoord2f(1.0f, 1.0f); glVertex3f( s,  s, -s);
-            glTexCoord2f(1.0f, 0.0f); glVertex3f( s,  s,  s);
-            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s,  s,  s);
+            glTexCoord2f(u0, v0); glVertex3f(-s,  s, -s);
+            glTexCoord2f(u1, v0); glVertex3f( s,  s, -s);
+            glTexCoord2f(u1, v1); glVertex3f( s,  s,  s);
+            glTexCoord2f(u0, v1); glVertex3f(-s,  s,  s);
         glEnd();
     }
     // Bottom Face (y = -s) -> Daylight Box_Bottom
     if (skyboxTextureIDs[3]) {
         glBindTexture(GL_TEXTURE_2D, skyboxTextureIDs[3]);
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f); glVertex3f(-s, -s, -s);
-            glTexCoord2f(1.0f, 0.0f); glVertex3f( s, -s, -s);
-            glTexCoord2f(1.0f, 1.0f); glVertex3f( s, -s,  s);
-            glTexCoord2f(0.0f, 1.0f); glVertex3f(-s, -s,  s);
+            glTexCoord2f(u0, v1); glVertex3f(-s, -s, -s);
+            glTexCoord2f(u1, v1); glVertex3f( s, -s, -s);
+            glTexCoord2f(u1, v0); glVertex3f( s, -s,  s);
+            glTexCoord2f(u0, v0); glVertex3f(-s, -s,  s);
         glEnd();
     }
 
@@ -631,4 +635,5 @@ void MyVirtualWorld::drawSkybox(float camX, float camY, float camZ)
     
     glDepthMask(GL_TRUE);
     glEnable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D); // Important: turn off so it doesn't affect the floor
 }
