@@ -233,45 +233,175 @@ void MyVirtualWorld::draw()
                 glPopMatrix();
 
                 if (caAttackingSuper && caAttackTimer <= 120 && caAttackTimer > 80) {
-                    glDisable(GL_LIGHTING); glDisable(GL_TEXTURE_2D);
-                    glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                    glLineWidth(3.0f);
-                    glColor4f(0.5f, 0.9f, 1.0f, 0.9f);
-                    glBegin(GL_LINES);
-                        glVertex3f(imX - 1.0f, imY + 30.0f, imZ - 0.5f); glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f);
-                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f);
-                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f);
-                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f);
-                        glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f); glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f);
-                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX + 5.0f, imY + 21.5f, imZ - 1.8f);
-                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX - 5.2f, imY + 17.5f, imZ + 2.1f);
-                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f);
-                    glEnd();
-                    if (caAttackTimer <= 104 && caAttackTimer > 96) {
-                        glColor4f(0.9f, 1.0f, 1.0f, 0.95f);
-                        glPushMatrix();
-                            glTranslatef(imX, imY + 7.0f, imZ);
-                            glutSolidSphere(4.2f, 24, 12);
-                        glPopMatrix();
+    glDisable(GL_LIGHTING); glDisable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-                        glLineWidth(5.0f);
-                        glColor4f(0.7f, 0.95f, 1.0f, 0.95f);
-                        glBegin(GL_LINES);
-                            glVertex3f(imX - 6.5f, imY + 7.0f, imZ); glVertex3f(imX + 6.5f, imY + 7.0f, imZ);
-                            glVertex3f(imX, imY + 0.5f, imZ); glVertex3f(imX, imY + 13.5f, imZ);
-                            glVertex3f(imX - 4.5f, imY + 2.5f, imZ + 2.0f); glVertex3f(imX + 4.5f, imY + 11.5f, imZ - 2.0f);
-                            glVertex3f(imX - 4.5f, imY + 11.5f, imZ - 2.0f); glVertex3f(imX + 4.5f, imY + 2.5f, imZ + 2.0f);
-                        glEnd();
-                    }
-                    glLineWidth(1.0f);
-                    glDisable(GL_BLEND); glEnable(GL_LIGHTING);
-                }
+    // Small per-frame jitter so the bolt crackles instead of staying static
+    float jx = sin(timenew * 3.1f) * 0.6f;
+    float jz = cos(timenew * 2.7f) * 0.6f;
+
+    glLineWidth(3.0f);
+    glColor4f(0.5f, 0.9f, 1.0f, 0.9f);
+    glBegin(GL_LINES);
+        // --- Main trunk (existing) ---
+        glVertex3f(imX - 1.0f + jx, imY + 30.0f, imZ - 0.5f + jz); glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f);
+        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f);
+        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f);
+        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f);
+        glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f); glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f);
+
+        // --- Existing mid forks ---
+        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX + 5.0f, imY + 21.5f, imZ - 1.8f);
+        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX - 5.2f, imY + 17.5f, imZ + 2.1f);
+        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f);
+
+        // --- Existing large outer branches ---
+        glVertex3f(imX + 3.0f, imY + 45.0f, imZ + 2.0f); glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f);
+        glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f); glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f);
+        glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f); glVertex3f(imX + 15.0f, imY + 8.0f, imZ + 2.0f);
+
+        glVertex3f(imX - 3.5f, imY + 30.0f, imZ - 2.5f); glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f);
+        glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f); glVertex3f(imX - 14.0f, imY + 10.0f, imZ + 2.0f);
+
+        // --- Existing inner crackles ---
+        glVertex3f(imX + 2.0f, imY + 18.0f, imZ + 1.5f); glVertex3f(imX + 7.0f, imY + 12.0f, imZ - 2.0f);
+        glVertex3f(imX - 1.9f, imY + 10.0f, imZ - 1.5f); glVertex3f(imX - 6.0f, imY + 4.0f, imZ + 1.0f);
+
+        // ===== NEW: tertiary mini-forks off the big outer branches =====
+        glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f); glVertex3f(imX + 13.5f, imY + 30.0f, imZ + 1.5f);
+        glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f); glVertex3f(imX + 17.0f, imY + 18.0f, imZ - 3.5f);
+        glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f); glVertex3f(imX - 15.0f, imY + 18.0f, imZ - 1.0f);
+        glVertex3f(imX - 14.0f, imY + 10.0f, imZ + 2.0f); glVertex3f(imX - 17.5f, imY + 4.0f, imZ + 5.0f);
+
+        // ===== NEW: extra branch shooting toward the camera/forward axis =====
+        glVertex3f(imX + 0.5f, imY + 38.0f, imZ + 3.0f); glVertex3f(imX + 4.5f, imY + 28.0f, imZ + 8.0f);
+        glVertex3f(imX + 4.5f, imY + 28.0f, imZ + 8.0f); glVertex3f(imX + 2.0f, imY + 16.0f, imZ + 6.5f);
+
+        glVertex3f(imX - 0.8f, imY + 33.0f, imZ - 4.0f); glVertex3f(imX - 4.8f, imY + 24.0f, imZ - 9.0f);
+        glVertex3f(imX - 4.8f, imY + 24.0f, imZ - 9.0f); glVertex3f(imX - 1.5f, imY + 14.0f, imZ - 6.0f);
+
+        // ===== NEW: dense fine crackle near impact point (lower body) =====
+        glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f); glVertex3f(imX + 3.5f, imY + 4.5f, imZ - 1.5f);
+        glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f); glVertex3f(imX - 3.0f, imY + 3.5f, imZ + 2.0f);
+        glVertex3f(imX - 1.9f, imY + 10.0f, imZ - 1.5f); glVertex3f(imX + 1.0f, imY + 6.0f, imZ - 4.0f);
+        glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f); glVertex3f(imX + 7.5f, imY + 9.0f, imZ + 1.0f);
+    glEnd();
+
+    if (caAttackTimer <= 104 && caAttackTimer > 96) {
+        // Flickering brightness on the core flash for a punchier hit
+        float flicker = 0.75f + (rand() % 25) / 100.0f;
+        glColor4f(0.2f, 0.4f, 1.0f, flicker);
+        glPushMatrix();
+            glTranslatef(imX, imY + 7.0f, imZ);
+            glutSolidSphere(6.0f, 24, 12);
+        glPopMatrix();
+        // Bright white-hot core inside the blue flash
+        glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
+        glPushMatrix();
+            glTranslatef(imX, imY + 7.0f, imZ);
+            glutSolidSphere(2.5f + (rand() % 10) / 10.0f, 16, 12);
+        glPopMatrix();
+
+        glLineWidth(6.0f);
+        glColor4f(0.1f, 0.3f, 1.0f, 0.95f);
+        glBegin(GL_LINES);
+            // --- Existing 4-ray starburst ---
+            glVertex3f(imX - 12.0f, imY + 7.0f, imZ); glVertex3f(imX + 12.0f, imY + 7.0f, imZ);
+            glVertex3f(imX, imY - 3.0f, imZ); glVertex3f(imX, imY + 18.0f, imZ);
+            glVertex3f(imX - 8.0f, imY + 1.0f, imZ + 5.0f); glVertex3f(imX + 8.0f, imY + 15.0f, imZ - 5.0f);
+            glVertex3f(imX - 8.0f, imY + 15.0f, imZ - 5.0f); glVertex3f(imX + 8.0f, imY + 1.0f, imZ + 5.0f);
+
+            // ===== NEW: extra rays to turn the 4-point star into an 8-point burst =====
+            glVertex3f(imX - 10.0f, imY + 7.0f, imZ + 9.0f); glVertex3f(imX + 10.0f, imY + 7.0f, imZ - 9.0f);
+            glVertex3f(imX - 10.0f, imY + 7.0f, imZ - 9.0f); glVertex3f(imX + 10.0f, imY + 7.0f, imZ + 9.0f);
+            glVertex3f(imX - 4.0f, imY - 2.0f, imZ - 4.0f); glVertex3f(imX + 4.0f, imY + 16.0f, imZ + 4.0f);
+            glVertex3f(imX + 4.0f, imY - 2.0f, imZ - 4.0f); glVertex3f(imX - 4.0f, imY + 16.0f, imZ + 4.0f);
+        glEnd();
+
+        // ===== NEW: thin ground ring scorch using a short line loop =====
+        glLineWidth(2.5f);
+        glColor4f(0.3f, 0.6f, 1.0f, 0.6f);
+        glBegin(GL_LINE_LOOP);
+            for (int i = 0; i < 16; i++) {
+                float ang = i * (360.0f / 16) * 3.14159265f / 180.0f;
+                glVertex3f(imX + cos(ang) * 9.0f, imY + 7.1f, imZ + sin(ang) * 9.0f);
+            }
+        glEnd();
+    }
+    glLineWidth(1.0f);
+    glDisable(GL_BLEND); glEnable(GL_LIGHTING);
+}
             }
 
 
             caAttackTimer -= 0.25f;
             if (caAttackTimer <= 0) { caAttackingHammer = false; caAttackingSuper = false; }
         }
+
+
+        // 6c. Captain America Super Activation Lightning (Calling down the Thunder)
+        if (caAttackingSuper && caAttackTimer > 180) {
+    glDisable(GL_LIGHTING); glDisable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+    float jx = sin(timenew * 4.0f) * 0.4f;
+    float jz = cos(timenew * 3.4f) * 0.4f;
+
+    glLineWidth(4.0f);
+    glColor4f(0.1f, 0.3f, 1.0f, 1.0f);
+    glBegin(GL_LINES);
+        // --- Existing main descending bolt ---
+        glVertex3f(animCaX - 2.0f + jx, animCaY + 80.0f, animCaZ - 1.0f + jz); glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f);
+        glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f); glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f);
+        glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f); glVertex3f(animCaX - 1.0f, animCaY + 22.0f, animCaZ + 0.5f);
+
+        // --- Existing secondary bolts ---
+        glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f); glVertex3f(animCaX + 10.0f, animCaY + 40.0f, animCaZ - 4.0f);
+        glVertex3f(animCaX + 10.0f, animCaY + 40.0f, animCaZ - 4.0f); glVertex3f(animCaX + 5.0f, animCaY + 25.0f, animCaZ - 1.0f);
+
+        glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f); glVertex3f(animCaX - 12.0f, animCaY + 25.0f, animCaZ + 3.0f);
+        glVertex3f(animCaX - 12.0f, animCaY + 25.0f, animCaZ + 3.0f); glVertex3f(animCaX - 8.0f, animCaY + 12.0f, animCaZ + 2.0f);
+
+        // --- Existing swirl around body ---
+        glVertex3f(animCaX - 6.0f, animCaY + 2.0f, animCaZ + 5.0f); glVertex3f(animCaX + 4.0f, animCaY + 8.0f, animCaZ - 3.0f);
+        glVertex3f(animCaX + 7.0f, animCaY + 4.0f, animCaZ - 6.0f); glVertex3f(animCaX - 5.0f, animCaY + 14.0f, animCaZ + 4.0f);
+
+        // ===== NEW: a second sky bolt striking from a different angle =====
+        glVertex3f(animCaX + 6.0f, animCaY + 85.0f, animCaZ + 4.0f); glVertex3f(animCaX + 2.0f, animCaY + 60.0f, animCaZ - 1.0f);
+        glVertex3f(animCaX + 2.0f, animCaY + 60.0f, animCaZ - 1.0f); glVertex3f(animCaX + 6.5f, animCaY + 38.0f, animCaZ + 3.0f);
+        glVertex3f(animCaX + 6.5f, animCaY + 38.0f, animCaZ + 3.0f); glVertex3f(animCaX + 2.5f, animCaY + 20.0f, animCaZ - 0.5f);
+
+        // ===== NEW: tertiary forks off the main trunk for density =====
+        glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f); glVertex3f(animCaX - 4.0f, animCaY + 48.0f, animCaZ + 6.0f);
+        glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f); glVertex3f(animCaX + 4.0f, animCaY + 28.0f, animCaZ - 6.0f);
+        glVertex3f(animCaX + 10.0f, animCaY + 40.0f, animCaZ - 4.0f); glVertex3f(animCaX + 14.0f, animCaY + 30.0f, animCaZ + 1.0f);
+        glVertex3f(animCaX - 12.0f, animCaY + 25.0f, animCaZ + 3.0f); glVertex3f(animCaX - 16.0f, animCaY + 15.0f, animCaZ - 1.0f);
+
+        // ===== NEW: tighter, faster crackle right against his body =====
+        glVertex3f(animCaX - 3.0f, animCaY + 6.0f, animCaZ - 4.0f); glVertex3f(animCaX + 2.0f, animCaY + 16.0f, animCaZ + 5.0f);
+        glVertex3f(animCaX + 5.0f, animCaY + 10.0f, animCaZ + 2.0f); glVertex3f(animCaX - 4.0f, animCaY + 2.0f, animCaZ - 5.0f);
+        glVertex3f(animCaX - 1.0f, animCaY + 18.0f, animCaZ - 3.0f); glVertex3f(animCaX + 6.0f, animCaY + 6.0f, animCaZ + 4.0f);
+    glEnd();
+
+    // Flashing ground aura while charging (existing, slightly denser)
+    if ((int)caAttackTimer % 8 > 3) {
+        glLineWidth(6.0f);
+        glColor4f(0.2f, 0.4f, 1.0f, 0.85f);
+        glBegin(GL_LINES);
+            glVertex3f(animCaX - 14.0f, animCaY + 0.5f, animCaZ); glVertex3f(animCaX + 14.0f, animCaY + 0.5f, animCaZ);
+            glVertex3f(animCaX, animCaY + 0.5f, animCaZ - 14.0f); glVertex3f(animCaX, animCaY + 0.5f, animCaZ + 14.0f);
+            glVertex3f(animCaX - 10.0f, animCaY + 0.5f, animCaZ + 10.0f); glVertex3f(animCaX + 10.0f, animCaY + 0.5f, animCaZ - 10.0f);
+            glVertex3f(animCaX - 10.0f, animCaY + 0.5f, animCaZ - 10.0f); glVertex3f(animCaX + 10.0f, animCaY + 0.5f, animCaZ + 10.0f);
+
+            // ===== NEW: extra ground arcs for a denser aura ring =====
+            glVertex3f(animCaX - 12.0f, animCaY + 0.5f, animCaZ + 6.0f); glVertex3f(animCaX + 12.0f, animCaY + 0.5f, animCaZ - 6.0f);
+            glVertex3f(animCaX - 6.0f, animCaY + 0.5f, animCaZ + 12.0f); glVertex3f(animCaX + 6.0f, animCaY + 0.5f, animCaZ - 12.0f);
+        glEnd();
+    }
+
+    glLineWidth(1.0f);
+    glDisable(GL_BLEND); glEnable(GL_LIGHTING);
+}
 
         // 7. Draw Characters
         // --- Iron Man ---
