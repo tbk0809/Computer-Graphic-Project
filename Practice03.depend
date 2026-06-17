@@ -227,13 +227,13 @@
 	"CGLabmain.hpp"
 	"CGLab03.hpp"
 
-1781626581 source:c:\users\asus\documents\github\computer-graphic-project\cglab03.cpp
+1781677054 source:c:\users\asus\documents\github\computer-graphic-project\cglab03.cpp
 	<GL/glut.h>
 	<string>
 	<fstream>
 	"CGLab03.hpp"
 
-1781626374 c:\users\asus\documents\github\computer-graphic-project\cglab03.hpp
+1781676492 c:\users\asus\documents\github\computer-graphic-project\cglab03.hpp
 	"CGLabmain.hpp"
 	<string>
 	<vector>

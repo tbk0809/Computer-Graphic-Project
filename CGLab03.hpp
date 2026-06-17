@@ -371,7 +371,9 @@ public:
     // --- Battle variables ---
     int  imHP,  caHP;
     bool imAttacking, caAttackingShield, caAttackingHammer, caAttackingSuper;
-    int  imAttackTimer, caAttackTimer;
+
+    // 【修改】将计时器类型从 int 改为 float，以支持小数递减延长动画
+    float  imAttackTimer, caAttackTimer;
 
     // --- Hand animation ---
     float captainHandAngle;     // current rotation angle of idle arms
@@ -391,7 +393,8 @@ public:
 
         if (captainHandAutoMode && (caAttackingShield || caAttackingHammer || caAttackingSuper)) {
             // Allows the idle arm to sway slightly while attacking
-            captainHandAngle = 10.0f * sin(caAttackTimer * 0.08f);
+            // 【修改】注释掉这行代码，防止释放技能时闲置手臂异常抽搐
+            // captainHandAngle = 10.0f * sin(caAttackTimer * 0.08f);
         }
     }
 
@@ -460,7 +463,7 @@ private:
 
         float hpScale = 3.0f;
 
-        // Iron Man � top left
+        // Iron Man – top left
         drawShadowText(80, h - 30, "IRON MAN", 1.0f, 0.8f, 0.0f);
 
         glColor3f(0.4f, 0.4f, 0.4f); drawCircle2D(45, h - 45, 22.0f);
@@ -490,7 +493,7 @@ private:
             glVertex2f(95,                   h - 40);
         glEnd();
 
-        // Captain America � top right
+        // Captain America – top right
         drawShadowText(w - 240, h - 30, "CAPTAIN AMERICA", 1.0f, 0.8f, 0.0f);
 
         glColor3f(0.8f, 0.1f, 0.1f); drawCircle2D(w - 45, h - 45, 22.0f);
@@ -561,7 +564,7 @@ public:
 
         imHP = 100; caHP = 100;
         imAttacking  = false; caAttackingShield = false; caAttackingHammer = false; caAttackingSuper = false;
-        imAttackTimer = 0;    caAttackTimer = 0;
+        imAttackTimer = 0.0f; caAttackTimer = 0.0f; // 【修改】初始化为 0.0f
 
         captainHandAngle    = 0.0f;
         captainHandAutoMode = true;

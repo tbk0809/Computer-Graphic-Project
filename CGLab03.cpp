@@ -130,7 +130,9 @@ void MyVirtualWorld::draw()
                 glPopMatrix();
             }
             glDisable(GL_BLEND); glEnable(GL_LIGHTING);
-            imAttackTimer--;
+
+            // 【修改】减缓倒计时，延长钢铁侠动画时间
+            imAttackTimer -= 0.5f;
             if (imAttackTimer <= 0) imAttacking = false;
         }
 
@@ -169,8 +171,6 @@ void MyVirtualWorld::draw()
 
                 glPushMatrix();
                     glTranslatef(currentX, currentY, currentZ);
-                    glRotatef(caAttackTimer * 70.0f, 0.0f, 1.0f, 0.0f);
-                    glRotatef(25.0f, 1.0f, 0.0f, 0.0f);
                     if (customWeaponsLoaded) {
                         glTranslatef(-shieldCenterX, -shieldCenterY, -shieldCenterZ);
                         customShield.draw();
@@ -182,11 +182,14 @@ void MyVirtualWorld::draw()
                     }
                 glPopMatrix();
             }
-            caAttackTimer--;
+
+
+            caAttackTimer -= 0.5f;
             if (caAttackTimer <= 0) caAttackingShield = false;
         }
 
         // 6b. Captain America Hammer Flight Effect (left hand after the weapon swap)
+
         if (caAttackingHammer || caAttackingSuper) {
             if (caAttackTimer <= 180 && caAttackTimer > 40) {
                 float startX = animCaX - 3.0f, startY = animCaY + 12.0f, startZ = animCaZ;
@@ -239,7 +242,9 @@ void MyVirtualWorld::draw()
                     glDisable(GL_BLEND); glEnable(GL_LIGHTING);
                 }
             }
-            caAttackTimer--;
+
+
+            caAttackTimer -= 0.25f;
             if (caAttackTimer <= 0) { caAttackingHammer = false; caAttackingSuper = false; }
         }
 
@@ -357,3 +362,5 @@ void MyVirtualWorld::draw()
     glPopMatrix();
     drawHUD();
 }
+
+
