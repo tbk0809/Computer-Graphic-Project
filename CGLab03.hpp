@@ -375,6 +375,8 @@ public:
     // 【修改】将计时器类型从 int 改为 float，以支持小数递减延长动画
     float  imAttackTimer, caAttackTimer;
 
+    GLuint grassTextureID;
+
     // --- Hand animation ---
     float captainHandAngle;     // current rotation angle of idle arms
     bool  captainHandAutoMode;
@@ -638,6 +640,32 @@ public:
             customHammer.load(hammerPath, matToFile, 12.5f);
             customWeaponsLoaded = true;
             cout << "[Weapons] Custom shield and hammer loaded.\n";
+        }
+
+        // --- Load grass texture ---
+        string grassCandidates[] = { "grass_texture.jpg", "../grass_texture.jpg", "../../grass_texture.jpg", "data/grass_texture.jpg" };
+        string grassPath = findFile(grassCandidates, 4);
+
+        if (!grassPath.empty()) {
+            int w, h, ch;
+            stbi_set_flip_vertically_on_load(true);
+            unsigned char* data = stbi_load(grassPath.c_str(), &w, &h, &ch, 0);
+            if (data) {
+                GLenum fmt = (ch == 4) ? GL_RGBA : GL_RGB;
+                glGenTextures(1, &grassTextureID);
+                glBindTexture(GL_TEXTURE_2D, grassTextureID);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                gluBuild2DMipmaps(GL_TEXTURE_2D, fmt, w, h, fmt, GL_UNSIGNED_BYTE, data);
+                stbi_image_free(data);
+                cout << "[World] Grass texture loaded from " << grassPath << "\n";
+            } else {
+                cerr << "[World] WARNING: Failed to decode grass texture.\n";
+            }
+        } else {
+            cerr << "[World] WARNING: Grass texture file not found.\n";
         }
 
         timeold = glutGet(GLUT_ELAPSED_TIME);

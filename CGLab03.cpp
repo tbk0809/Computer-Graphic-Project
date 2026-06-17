@@ -32,17 +32,53 @@ void MyVirtualWorld::draw()
 
         // 2. Battle environment
         glPushMatrix();
-            glDisable(GL_TEXTURE_2D);
-            GLfloat grassColor[] = {0.0f, 1.0f, 1.0f, 1.0f};
+            if (grassTextureID) {
+                glEnable(GL_TEXTURE_2D);
+                glBindTexture(GL_TEXTURE_2D, grassTextureID);
+                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+                glColor3f(1.0f, 1.0f, 1.0f);
+            } else {
+                glColor3f(0.2f, 0.8f, 0.2f);
+            }
+            
+            GLfloat grassColor[] = {0.8f, 0.8f, 0.8f, 1.0f};
             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, grassColor);
-            glColor3f(0.2f, 0.8f, 0.2f);
-            glBegin(GL_QUADS);
-                glNormal3f(0.0f, 1.0f, 0.0f);
-                glVertex3f(-100.0f, -5.0f,  100.0f);
-                glVertex3f( 100.0f, -5.0f,  100.0f);
-                glVertex3f( 100.0f, -5.0f, -100.0f);
-                glVertex3f(-100.0f, -5.0f, -100.0f);
-            glEnd();
+
+            GLfloat xmin = -100.0f, xmax = 100.0f;
+            GLfloat zmin = -100.0f, zmax = 100.0f;
+            GLfloat xdim = xmax - xmin;
+            GLfloat zdim = zmax - zmin;
+            GLfloat texSMax = 20.0f;
+            GLfloat texTMax = 20.0f;
+            GLfloat quadSizeX = 5.0f;
+            GLfloat quadSizeZ = 5.0f;
+            GLfloat texScaleX = texSMax/xdim;
+            GLfloat texScaleZ = texTMax/zdim;
+
+            for (GLfloat z1 = zmin; z1 < zmax; z1 += quadSizeZ) {
+                GLfloat z2 = z1 + quadSizeZ;
+                GLfloat t1 = texScaleZ * (z1 - zmin);
+                GLfloat t2 = texScaleZ * (z2 - zmin);
+                for (GLfloat x1 = xmin; x1 < xmax; x1 += quadSizeX) {
+                    GLfloat x2 = x1 + quadSizeX;
+                    GLfloat s1 = texScaleX * (x1 - xmin);
+                    GLfloat s2 = texScaleX * (x2 - xmin);
+
+                    glBegin(GL_QUADS);
+                    glNormal3f(0.0f, 1.0f, 0.0f);
+                    if (grassTextureID) glTexCoord2f(s1, t1);
+                    glVertex3f(x1, -5.0f, z1);
+                    if (grassTextureID) glTexCoord2f(s1, t2);
+                    glVertex3f(x1, -5.0f, z2);
+                    if (grassTextureID) glTexCoord2f(s2, t2);
+                    glVertex3f(x2, -5.0f, z2);
+                    if (grassTextureID) glTexCoord2f(s2, t1);
+                    glVertex3f(x2, -5.0f, z1);
+                    glEnd();
+                }
+            }
+
+            if (grassTextureID) glDisable(GL_TEXTURE_2D);
         glPopMatrix();
 
         // 3. Iron Man animation
