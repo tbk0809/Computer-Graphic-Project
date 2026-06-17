@@ -29,18 +29,18 @@ void myInit();
 void myWelcome();
 void myLightingInit();
 
-static GLfloat myblack[]   = { 0.0f, 0.0f, 0.0f, 1.0f };
-static GLfloat mywhite[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
-static GLfloat myred[]     = { 1.0f, 0.0f, 0.0f, 1.0f };
-static GLfloat mygreen[]   = { 0.0f, 1.0f, 0.0f, 1.0f };
-static GLfloat myblue[]    = { 0.0f, 0.0f, 1.0f, 1.0f };
-static GLfloat mycyan[]    = { 0.0f, 1.0f, 1.0f, 1.0f };
-static GLfloat mymagenta[] = { 1.0f, 0.0f, 1.0f, 1.0f };
-static GLfloat myyellow[]  = { 1.0f, 1.0f, 0.0f, 1.0f };
+// static GLfloat myblack[]   = { 0.0f, 0.0f, 0.0f, 1.0f };
+// static GLfloat mywhite[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
+// static GLfloat myred[]     = { 1.0f, 0.0f, 0.0f, 1.0f };
+// static GLfloat mygreen[]   = { 0.0f, 1.0f, 0.0f, 1.0f };
+// static GLfloat myblue[]    = { 0.0f, 0.0f, 1.0f, 1.0f };
+// static GLfloat mycyan[]    = { 0.0f, 1.0f, 1.0f, 1.0f };
+// static GLfloat mymagenta[] = { 1.0f, 0.0f, 1.0f, 1.0f };
+// static GLfloat myyellow[]  = { 1.0f, 1.0f, 0.0f, 1.0f };
 
-static GLfloat mygray10Percent[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-static GLfloat mygray20Percent[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-static GLfloat mygray30Percent[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+// static GLfloat mygray10Percent[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+// static GLfloat mygray20Percent[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+// static GLfloat mygray30Percent[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 
 struct MyWindow {
  string title;
