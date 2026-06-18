@@ -276,7 +276,7 @@
 	"CGLabmain.hpp"
 	"CGLab03.hpp"
 
-1781712362 source:c:\users\user\documents\github\computer-graphic-project\cglabmain.cpp
+1781810466 source:c:\users\user\documents\github\computer-graphic-project\cglabmain.cpp
 	<cstdlib>
 	<iostream>
 	<iomanip>
@@ -285,13 +285,13 @@
 	"CGLabmain.hpp"
 	"CGLab03.hpp"
 
-1781709225 c:\users\user\documents\github\computer-graphic-project\cglabmain.hpp
+1781790209 c:\users\user\documents\github\computer-graphic-project\cglabmain.hpp
 	<string>
 	<cmath>
 	<iostream>
 	<GL/glut.h>
 
-1781712707 c:\users\user\documents\github\computer-graphic-project\cglab03.hpp
+1781810645 c:\users\user\documents\github\computer-graphic-project\cglab03.hpp
 	"CGLabmain.hpp"
 	<string>
 	<vector>
@@ -302,7 +302,7 @@
 	<map>
 	"stb_image.h"
 
-1781527636 c:\users\user\documents\github\computer-graphic-project\stb_image.h
+1781790210 c:\users\user\documents\github\computer-graphic-project\stb_image.h
 	"stb_image.h"
 	<stdio.h>
 	<stdlib.h>
@@ -319,9 +319,11 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1781712325 source:c:\users\user\documents\github\computer-graphic-project\cglab03.cpp
+1781811048 source:c:\users\user\documents\github\computer-graphic-project\cglab03.cpp
 	<GL/glut.h>
 	<string>
 	<fstream>
+	<iostream>
+	<cmath>
 	"CGLab03.hpp"
 

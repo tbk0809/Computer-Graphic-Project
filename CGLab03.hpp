@@ -370,9 +370,11 @@ public:
 
     // --- Battle variables ---
     int  imHP,  caHP;
-    bool imAttacking, caAttackingShield, caAttackingHammer, caAttackingSuper;
+    bool imAttacking, imAttackingMissiles, imIsDefending, imDefendingAnim, caIsDefending, caDefendingAnim, caAttackingHammer, caAttackingSuper;
 
-    // 【修改】将计时器类型从 int 改为 float，以支持小数递减延长动画
+    // NEW: 1 = Iron Man's Turn, 2 = Captain America's Turn
+    int currentTurn;
+
     float  imAttackTimer, caAttackTimer;
 
     GLuint grassTextureID;
@@ -395,7 +397,8 @@ public:
         elapseTime = timenew - timeold;
         timeold    = timenew;
 
-        if (captainHandAutoMode && (caAttackingShield || caAttackingHammer || caAttackingSuper)) {
+        // ADD THE MISSING '(' RIGHT BEFORE caAttackingShield
+        if (captainHandAutoMode && (caDefendingAnim || caAttackingHammer || caAttackingSuper)) {
             // Allows the idle arm to sway slightly while attacking
             // 【修改】注释掉这行代码，防止释放技能时闲置手臂异常抽搐
             // captainHandAngle = 10.0f * sin(caAttackTimer * 0.08f);
@@ -409,7 +412,7 @@ public:
     }
 
     void moveCaptainHands(float delta) {
-        if (!caAttackingShield && !caAttackingHammer && !caAttackingSuper) {
+        if (!caDefendingAnim && !caAttackingHammer && !caAttackingSuper) {
             captainHandAngle += delta;
             cout << "[Captain America] Hand angle: " << captainHandAngle << endl;
         }
@@ -533,9 +536,67 @@ private:
         glEnd();
         glLineWidth(1.0f);
 
-        if (imHP > 0 && caHP > 0)
+        if (imHP > 0 && caHP > 0) {
             drawShadowText(w / 2 - 15, h - 45, "VS", 1.0f, 1.0f, 1.0f);
 
+            // We removed the Defending states from here so the menu SHOWS UP while shields are held!
+            bool isAnimating = imAttacking || imAttackingMissiles || caAttackingHammer || caAttackingSuper;
+            if (!isAnimating) {
+                // Menu Box Dimensions and Position (Bottom Center)
+                int boxW = 500;
+                int boxH = 100;
+                int boxX = w / 2 - boxW / 2;
+                int boxY = 20;
+
+                // 1. Draw Semi-Transparent Dark Background
+                glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                glColor4f(0.05f, 0.1f, 0.15f, 0.85f);
+                glBegin(GL_QUADS);
+                    glVertex2f(boxX, boxY);
+                    glVertex2f(boxX + boxW, boxY);
+                    glVertex2f(boxX + boxW, boxY + boxH);
+                    glVertex2f(boxX, boxY + boxH);
+                glEnd();
+
+                // 2. Draw Thick Colored Border
+                glLineWidth(4.0f);
+                if (currentTurn == 1) glColor3f(1.0f, 0.8f, 0.0f); // Gold for Iron Man
+                else glColor3f(0.2f, 0.6f, 1.0f);                  // Blue for Cap
+
+                glBegin(GL_LINE_LOOP);
+                    glVertex2f(boxX, boxY);
+                    glVertex2f(boxX + boxW, boxY);
+                    glVertex2f(boxX + boxW, boxY + boxH);
+                    glVertex2f(boxX, boxY + boxH);
+                glEnd();
+                glLineWidth(1.0f);
+                glDisable(GL_BLEND);
+
+                // 3. Draw Prompt and Skill Options
+                if (currentTurn == 1) {
+                    drawShadowText(boxX + 20, boxY + 70, "What will IRON MAN do?", 1.0f, 1.0f, 1.0f);
+
+                    // Left Column
+                    drawShadowText(boxX + 40, boxY + 40, "[SPACE] Unibeam", 1.0f, 0.8f, 0.0f);
+                    drawShadowText(boxX + 40, boxY + 15, "[W/A/S/D] Move", 0.7f, 0.7f, 0.7f);
+
+                    // Right Column
+                    drawShadowText(boxX + 260, boxY + 40, "[Q] Micro-Missiles", 1.0f, 0.4f, 0.0f);
+                    drawShadowText(boxX + 260, boxY + 15, "[E] Defend", 0.4f, 0.8f, 1.0f); // NEW TEXT
+                }
+                else if (currentTurn == 2) {
+                    drawShadowText(boxX + 20, boxY + 70, "What will CAPTAIN AMERICA do?", 1.0f, 1.0f, 1.0f);
+
+                    // Left Column
+                    drawShadowText(boxX + 40, boxY + 40, "[ENTER] Defend", 0.4f, 0.8f, 1.0f); // CHANGED TO DEFEND!
+                    drawShadowText(boxX + 40, boxY + 15, "[I/J/K/L] Move", 0.7f, 0.7f, 0.7f);
+
+                    // Right Column
+                    drawShadowText(boxX + 260, boxY + 40, "[H] Hammer Strike", 0.8f, 0.8f, 0.9f);
+                    drawShadowText(boxX + 260, boxY + 15, "[U] Thunder Super", 0.9f, 0.2f, 0.2f);
+                }
+            }
+        }
         if (imHP <= 0 || caHP <= 0) {
             string winText = (imHP <= 0) ? "CAPTAIN AMERICA WINS!" : "IRON MAN WINS!";
             glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -567,8 +628,12 @@ public:
         caX = -5.0f; caY = -5.0f; caZ =  15.0f;
 
         imHP = 100; caHP = 100;
-        imAttacking  = false; caAttackingShield = false; caAttackingHammer = false; caAttackingSuper = false;
-        imAttackTimer = 0.0f; caAttackTimer = 0.0f; // 【修改】初始化为 0.0f
+        currentTurn = 1; // IRON MAN GOES FIRST!
+        imAttacking  = false; imAttackingMissiles = false;
+        imIsDefending = false; imDefendingAnim = false;
+        caIsDefending = false; caDefendingAnim = false;
+        caAttackingHammer = false; caAttackingSuper = false;
+        imAttackTimer = 0.0f; caAttackTimer = 0.0f;
         grassTextureID = 0;
         for (int i = 0; i < 6; i++) skyboxTextureIDs[i] = 0;
 
