@@ -372,7 +372,7 @@ public:
     int  imHP,  caHP;
     bool imAttacking, caAttackingShield, caAttackingHammer, caAttackingSuper;
 
-    // 【修改】将计时器类型从 int 改为 float，以支持小数递减延长动画
+
     float  imAttackTimer, caAttackTimer;
 
     GLuint grassTextureID;
@@ -397,7 +397,7 @@ public:
 
         if (captainHandAutoMode && (caAttackingShield || caAttackingHammer || caAttackingSuper)) {
             // Allows the idle arm to sway slightly while attacking
-            // 【修改】注释掉这行代码，防止释放技能时闲置手臂异常抽搐
+
             // captainHandAngle = 10.0f * sin(caAttackTimer * 0.08f);
         }
     }
