@@ -92,6 +92,65 @@ void MyVirtualWorld::draw()
             if (grassTextureID) glDisable(GL_TEXTURE_2D);
         glPopMatrix();
 
+        // ==============================================================
+        // 2b. Draw Avengers Logo (Pure OpenGL Geometry!)
+        // ==============================================================
+        glPushMatrix();
+            glTranslatef(0.0f, -4.9f, 0.0f);
+
+            glScalef(2.0f, 1.0f, 2.0f);
+
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glDisable(GL_LIGHTING);
+            glDisable(GL_CULL_FACE);
+
+            // Classic Avengers Red
+            glColor4f(0.85f, 0.15f, 0.15f, 0.85f);
+
+            // 1. Draw the thick outer ring
+            float outerRad = 12.0f;
+            float innerRad = 10.0f;
+            glBegin(GL_QUAD_STRIP);
+            for (int i = 0; i <= 32; i++) {
+                float theta = 2.0f * 3.1415926f * float(i) / 32.0f;
+                float cx = cos(theta);
+                float cz = sin(theta);
+                glVertex3f(outerRad * cx, 0.0f, outerRad * cz);
+                glVertex3f(innerRad * cx, 0.0f, innerRad * cz);
+            }
+            glEnd();
+
+            // 2. Draw the 'A' Left Leg
+            glBegin(GL_QUADS);
+                glVertex3f( 0.0f, 0.0f, -13.5f);
+                glVertex3f(-2.0f, 0.0f, -13.5f);
+                glVertex3f(-7.0f, 0.0f,  9.0f);
+                glVertex3f(-3.0f, 0.0f,  9.0f);
+            glEnd();
+
+            // 3. Draw the 'A' Right Leg
+            glBegin(GL_QUADS);
+                glVertex3f(-2.0f, 0.0f, -13.5f);
+                glVertex3f( 0.0f, 0.0f, -13.5f);
+                glVertex3f( 7.5f, 0.0f,  12.0f);
+                glVertex3f( 3.5f, 0.0f,  12.0f);
+            glEnd();
+
+            // 4. Draw the Arrow Crossbar
+            glBegin(GL_POLYGON);
+                glVertex3f(-4.5f, 0.0f,  1.0f);
+                glVertex3f( 4.5f, 0.0f,  1.0f);
+                glVertex3f( 9.5f, 0.0f,  3.0f);
+                glVertex3f( 3.5f, 0.0f,  5.0f);
+                glVertex3f(-6.0f, 0.0f,  5.0f);
+            glEnd();
+
+            glEnable(GL_CULL_FACE);
+            glDisable(GL_BLEND);
+            glEnable(GL_LIGHTING);
+        glPopMatrix();
+
         // 3. Iron Man animation
         float animImX = imX, animImY = imY, animImZ = imZ;
         float imTiltX = 0.0f;
