@@ -303,11 +303,6 @@ void myWelcome() {
     cout<<"|   HOME                     => restore defaults                |\n";
     cout<<"|   ESC                      => exit                            |\n";
     cout<<"|                                                               |\n";
-    cout<<"| Captain America Hands (split model only):                     |\n";
-    cout<<"|   1  => toggle auto-swing on/off (swings during attack only)  |\n";
-    cout<<"|   2  => manual arm angle -5 deg (when not attacking)          |\n";
-    cout<<"|   3  => manual arm angle +5 deg (when not attacking)          |\n";
-    cout<<"|                                                               |\n";
     cout<<"| Camera:                                                       |\n";
     cout<<"|   B/V => camera left/right  N/M => camera down/up             |\n";
     cout<<"|   Z/X => zoom in/out        C   => reset camera               |\n";
