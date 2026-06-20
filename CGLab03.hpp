@@ -400,7 +400,7 @@ public:
         // ADD THE MISSING '(' RIGHT BEFORE caAttackingShield
         if (captainHandAutoMode && (caDefendingAnim || caAttackingHammer || caAttackingSuper)) {
             // Allows the idle arm to sway slightly while attacking
-            // 【修改】注释掉这行代码，防止释放技能时闲置手臂异常抽搐
+
             // captainHandAngle = 10.0f * sin(caAttackTimer * 0.08f);
         }
     }
