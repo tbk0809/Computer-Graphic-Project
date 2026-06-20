@@ -242,12 +242,12 @@ void myViewingInit() {
 
 void myLightingInit() {
     // Ambient: raise to 0.4 so scene never goes pitch-black regardless of camera distance
-    static GLfloat ambient[]  = {0.4f, 0.4f, 0.4f, 1.0f};
-    static GLfloat diffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f};
-    static GLfloat specular[] = {0.8f, 0.8f, 0.8f, 1.0f};
-    static GLfloat specref[]  = {1.0f, 1.0f, 1.0f, 1.0f};
+    static GLfloat ambient[]  = {0.4f, 0.35f, 0.35f, 1.0f};
+    static GLfloat diffuse[]  = {1.0f, 0.6f, 0.3f, 1.0f};
+    static GLfloat specular[] = {0.8f, 0.5f, 0.2f, 1.0f};
+    static GLfloat specref[]  = {1.0f, 0.8f, 0.6f, 1.0f};
     // w=0 makes this a directional (infinite) light - distance to camera doesn't matter
-    static GLfloat position[] = {1.0f, 1.5f, 1.0f, 0.0f};
+    static GLfloat position[] = {1.0f, 0.3f, 1.0f, 0.0f};
     short shininess = 128;
     glDisable(GL_LIGHTING);
     glLightfv(GL_LIGHT0, GL_AMBIENT,  ambient);
