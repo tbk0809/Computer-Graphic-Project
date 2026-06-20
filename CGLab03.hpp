@@ -377,7 +377,7 @@ public:
 
     float  imAttackTimer, caAttackTimer;
 
-
+    GLuint grassTextureID;
     GLuint skyboxTextureIDs[6];
 
     // --- Hand animation ---
@@ -634,7 +634,7 @@ public:
         caIsDefending = false; caDefendingAnim = false;
         caAttackingHammer = false; caAttackingSuper = false;
         imAttackTimer = 0.0f; caAttackTimer = 0.0f;
-
+        grassTextureID = 0;
         for (int i = 0; i < 6; i++) skyboxTextureIDs[i] = 0;
 
         captainHandAngle    = 0.0f;
@@ -711,7 +711,31 @@ public:
             cout << "[Weapons] Custom shield and hammer loaded.\n";
         }
 
+        // --- Load grass texture ---
+        string grassCandidates[] = { "grass_texture.jpg", "../grass_texture.jpg", "../../grass_texture.jpg", "data/grass_texture.jpg" };
+        string grassPath = findFile(grassCandidates, 4);
 
+        if (!grassPath.empty()) {
+            int w, h, ch;
+            stbi_set_flip_vertically_on_load(true);
+            unsigned char* data = stbi_load(grassPath.c_str(), &w, &h, &ch, 0);
+            if (data) {
+                GLenum fmt = (ch == 4) ? GL_RGBA : GL_RGB;
+                glGenTextures(1, &grassTextureID);
+                glBindTexture(GL_TEXTURE_2D, grassTextureID);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                gluBuild2DMipmaps(GL_TEXTURE_2D, fmt, w, h, fmt, GL_UNSIGNED_BYTE, data);
+                stbi_image_free(data);
+                cout << "[World] Grass texture loaded from " << grassPath << "\n";
+            } else {
+                cerr << "[World] WARNING: Failed to decode grass texture.\n";
+            }
+        } else {
+            cerr << "[World] WARNING: Grass texture file not found.\n";
+        }
 
         // --- Load skybox textures ---
         string skyFaces[6] = {

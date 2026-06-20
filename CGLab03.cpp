@@ -41,158 +41,55 @@ void MyVirtualWorld::draw()
             glTranslatef(shakeX, shakeY, 0.0f);
         }
 
-        // 2. Battle environment (Winter Warzone)
+        // 2. Battle environment (Grass Arena)
         glPushMatrix();
-            glDisable(GL_TEXTURE_2D);
+            if (grassTextureID) {
+                glEnable(GL_TEXTURE_2D);
+                glBindTexture(GL_TEXTURE_2D, grassTextureID);
+                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+                glColor3f(1.0f, 1.0f, 1.0f);
+            } else {
+                glColor3f(0.2f, 0.8f, 0.2f);
+            }
 
-            GLfloat xmin = -150.0f, xmax = 150.0f;
-            GLfloat zmin = -150.0f, zmax = 150.0f;
-            GLfloat quadSizeX = 6.0f;
-            GLfloat quadSizeZ = 6.0f;
+            GLfloat grassColor[] = {0.8f, 0.8f, 0.8f, 1.0f};
+            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, grassColor);
 
-            // Draw procedural jittery ground
-            srand(12345); // Fixed seed for stable terrain
-            glBegin(GL_QUADS);
+            GLfloat xmin = -100.0f, xmax = 100.0f;
+            GLfloat zmin = -100.0f, zmax = 100.0f;
+            GLfloat xdim = xmax - xmin;
+            GLfloat zdim = zmax - zmin;
+            GLfloat texSMax = 20.0f;
+            GLfloat texTMax = 20.0f;
+            GLfloat quadSizeX = 5.0f;
+            GLfloat quadSizeZ = 5.0f;
+            GLfloat texScaleX = texSMax/xdim;
+            GLfloat texScaleZ = texTMax/zdim;
+
             for (GLfloat z1 = zmin; z1 < zmax; z1 += quadSizeZ) {
                 GLfloat z2 = z1 + quadSizeZ;
+                GLfloat t1 = texScaleZ * (z1 - zmin);
+                GLfloat t2 = texScaleZ * (z2 - zmin);
                 for (GLfloat x1 = xmin; x1 < xmax; x1 += quadSizeX) {
                     GLfloat x2 = x1 + quadSizeX;
+                    GLfloat s1 = texScaleX * (x1 - xmin);
+                    GLfloat s2 = texScaleX * (x2 - xmin);
 
-                    // Random heights for jitter
-                    float y11 = -5.0f + (rand() % 100) / 150.0f;
-                    float y12 = -5.0f + (rand() % 100) / 150.0f;
-                    float y21 = -5.0f + (rand() % 100) / 150.0f;
-                    float y22 = -5.0f + (rand() % 100) / 150.0f;
-
-                    // Concrete or snow color
-                    if (rand() % 3 == 0) {
-                        glColor3f(0.5f, 0.5f, 0.55f); // Concrete rubble color
-                    } else {
-                        glColor3f(0.85f, 0.9f, 0.95f); // Snow/ice color
-                    }
-                    
-                    // Simple normals
+                    glBegin(GL_QUADS);
                     glNormal3f(0.0f, 1.0f, 0.0f);
-                    glVertex3f(x1, y11, z1);
-                    glVertex3f(x1, y12, z2);
-                    glVertex3f(x2, y22, z2);
-                    glVertex3f(x2, y21, z1);
+                    if (grassTextureID) glTexCoord2f(s1, t1);
+                    glVertex3f(x1, -5.0f, z1);
+                    if (grassTextureID) glTexCoord2f(s1, t2);
+                    glVertex3f(x1, -5.0f, z2);
+                    if (grassTextureID) glTexCoord2f(s2, t2);
+                    glVertex3f(x2, -5.0f, z2);
+                    if (grassTextureID) glTexCoord2f(s2, t1);
+                    glVertex3f(x2, -5.0f, z1);
+                    glEnd();
                 }
             }
-            glEnd();
 
-            // Draw scattered debris (concrete cubes and rusty rebars)
-            srand(54321);
-            for(int i = 0; i < 200; ++i) {
-                float dx = xmin + (rand() % 300);
-                float dz = zmin + (rand() % 300);
-                float dy = -4.5f + (rand() % 100) / 100.0f;
-                glPushMatrix();
-                glTranslatef(dx, dy, dz);
-                glRotatef(rand() % 360, 0, 1, 0);
-                glRotatef(rand() % 360, 1, 0, 0);
-
-                if (rand() % 2 == 0) {
-                    // Concrete cube
-                    glColor3f(0.4f, 0.4f, 0.4f);
-                    float size = 0.5f + (rand() % 10) / 10.0f;
-                    glutSolidCube(size);
-                } else {
-                    // Rusty rebar (long reddish thin box)
-                    glColor3f(0.4f, 0.15f, 0.05f);
-                    glScalef(0.1f, 0.1f, 2.0f + (rand() % 20) / 10.0f);
-                    glutSolidCube(1.0f);
-                }
-                glPopMatrix();
-            }
-
-            // Draw Craters
-            srand(98765);
-            glDisable(GL_LIGHTING);
-            for(int i = 0; i < 15; ++i) {
-                float cx = xmin + (rand() % 300);
-                float cz = zmin + (rand() % 300);
-                float cr = 3.0f + (rand() % 5);
-                glColor3f(0.2f, 0.2f, 0.2f); // Dark crater center
-                glBegin(GL_POLYGON);
-                for(int a = 0; a < 16; ++a) {
-                    float theta = a * 3.14159f * 2.0f / 16.0f;
-                    glVertex3f(cx + cos(theta)*cr, -4.8f + (rand()%10)/100.0f, cz + sin(theta)*cr);
-                }
-                glEnd();
-            }
-            glEnable(GL_LIGHTING);
-
-            // Midground: Frozen Hydra Base in the distance
-            glPushMatrix();
-                glTranslatef(0.0f, -5.0f, -120.0f);
-                
-                // Skeletal structure
-                glColor3f(0.25f, 0.25f, 0.3f);
-                for(int i = -3; i <= 3; ++i) {
-                    glPushMatrix();
-                    glTranslatef(i * 15.0f, 10.0f, 0.0f);
-                    glScalef(2.0f, 20.0f, 2.0f);
-                    glutSolidCube(1.0f);
-                    glPopMatrix();
-                }
-                // Horizontal beam
-                glPushMatrix();
-                glTranslatef(0.0f, 20.0f, 0.0f);
-                glScalef(100.0f, 2.0f, 2.0f);
-                glutSolidCube(1.0f);
-                glPopMatrix();
-
-                // Bunker and half-open door
-                glColor3f(0.3f, 0.3f, 0.3f);
-                glPushMatrix();
-                glTranslatef(-20.0f, 5.0f, -10.0f);
-                glScalef(30.0f, 10.0f, 15.0f);
-                glutSolidCube(1.0f);
-                glPopMatrix();
-
-                // Door (angled)
-                glColor3f(0.15f, 0.15f, 0.15f);
-                glPushMatrix();
-                glTranslatef(-10.0f, 5.0f, -2.5f);
-                glRotatef(-30.0f, 0.0f, 1.0f, 0.0f);
-                glScalef(8.0f, 10.0f, 0.5f);
-                glutSolidCube(1.0f);
-                glPopMatrix();
-
-            glPopMatrix();
-
-            // Simple Drop Shadows for Characters
-            glDisable(GL_LIGHTING);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glColor4f(0.0f, 0.0f, 0.0f, 0.6f);
-
-            // Iron Man Shadow
-            glPushMatrix();
-            glTranslatef(imX, -4.9f, imZ);
-            glBegin(GL_POLYGON);
-            for(int a = 0; a < 16; ++a) {
-                float theta = a * 3.14159f * 2.0f / 16.0f;
-                glVertex3f(cos(theta)*2.5f, 0.0f, sin(theta)*2.5f);
-            }
-            glEnd();
-            glPopMatrix();
-
-            // Captain America Shadow
-            glPushMatrix();
-            glTranslatef(caX, -4.9f, caZ);
-            glBegin(GL_POLYGON);
-            for(int a = 0; a < 16; ++a) {
-                float theta = a * 3.14159f * 2.0f / 16.0f;
-                glVertex3f(cos(theta)*3.0f, 0.0f, sin(theta)*3.0f);
-            }
-            glEnd();
-            glPopMatrix();
-
-            glDisable(GL_BLEND);
-            glEnable(GL_LIGHTING);
-
+            if (grassTextureID) glDisable(GL_TEXTURE_2D);
         glPopMatrix();
 
         // 3. Iron Man animation
