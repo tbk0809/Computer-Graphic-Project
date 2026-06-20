@@ -712,11 +712,12 @@ void MyVirtualWorld::draw()
                 // LEFT HAND (Holds Hammer after swap)
                 // ==========================================
                 glPushMatrix();
-                    glTranslatef(-2.35f, 18.8f, -0.35f);
+                    glTranslatef(-1.95f, 18.8f, -0.35f);
                     if (caAttackingHammer || caAttackingSuper) glRotatef(leftArmPitch, 1.0f, 0.0f, 0.0f);
                     else glRotatef(captainHandAngle, 0.0f, 0.0f, 1.0f);
                     glTranslatef(2.35f, -18.8f, 0.35f);
 
+                    // Shift the left arm slightly inwards to close the gap with the body
                     captainLeftHand.draw();
 
                     bool hammerFlying = ((caAttackingHammer || caAttackingSuper) && caAttackTimer <= 180 && caAttackTimer > 40);
@@ -749,7 +750,7 @@ void MyVirtualWorld::draw()
                 // RIGHT HAND (Holds Shield to block)
                 // ==========================================
                 glPushMatrix();
-                    glTranslatef(2.35f, 18.8f, -0.35f);
+                    glTranslatef(1.85f, 18.8f, -0.35f);
                     if (caDefendingAnim) {
                         glRotatef(rightArmYaw, 0.0f, 1.0f, 0.0f);   // Swing deep across chest
                         glRotatef(rightArmPitch, 1.0f, 0.0f, 0.0f); // Lift arm up
