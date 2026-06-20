@@ -463,47 +463,55 @@ void MyVirtualWorld::draw()
                     glDisable(GL_LIGHTING); glDisable(GL_TEXTURE_2D);
                     glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-                    float jx = sin(timenew * 3.1f) * 0.6f;
-                    float jz = cos(timenew * 2.7f) * 0.6f;
-
+                    // Realistic Lightning: multiple lines appear and disappear dynamically
                     glLineWidth(3.0f);
-                    glColor4f(0.5f, 0.9f, 1.0f, 0.9f);
                     glBegin(GL_LINES);
-                        glVertex3f(imX - 1.0f + jx, imY + 30.0f, imZ - 0.5f + jz); glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f);
-                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f);
-                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f);
-                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f);
-                        glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f); glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f);
-
-                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX + 5.0f, imY + 21.5f, imZ - 1.8f);
-                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX - 5.2f, imY + 17.5f, imZ + 2.1f);
-                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f);
-
-                        glVertex3f(imX + 3.0f, imY + 45.0f, imZ + 2.0f); glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f);
-                        glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f); glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f);
-                        glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f); glVertex3f(imX + 15.0f, imY + 8.0f, imZ + 2.0f);
-
-                        glVertex3f(imX - 3.5f, imY + 30.0f, imZ - 2.5f); glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f);
-                        glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f); glVertex3f(imX - 14.0f, imY + 10.0f, imZ + 2.0f);
-
-                        glVertex3f(imX + 2.0f, imY + 18.0f, imZ + 1.5f); glVertex3f(imX + 7.0f, imY + 12.0f, imZ - 2.0f);
-                        glVertex3f(imX - 1.9f, imY + 10.0f, imZ - 1.5f); glVertex3f(imX - 6.0f, imY + 4.0f, imZ + 1.0f);
-
-                        glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f); glVertex3f(imX + 13.5f, imY + 30.0f, imZ + 1.5f);
-                        glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f); glVertex3f(imX + 17.0f, imY + 18.0f, imZ - 3.5f);
-                        glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f); glVertex3f(imX - 15.0f, imY + 18.0f, imZ - 1.0f);
-                        glVertex3f(imX - 14.0f, imY + 10.0f, imZ + 2.0f); glVertex3f(imX - 17.5f, imY + 4.0f, imZ + 5.0f);
-
-                        glVertex3f(imX + 0.5f, imY + 38.0f, imZ + 3.0f); glVertex3f(imX + 4.5f, imY + 28.0f, imZ + 8.0f);
-                        glVertex3f(imX + 4.5f, imY + 28.0f, imZ + 8.0f); glVertex3f(imX + 2.0f, imY + 16.0f, imZ + 6.5f);
-
-                        glVertex3f(imX - 0.8f, imY + 33.0f, imZ - 4.0f); glVertex3f(imX - 4.8f, imY + 24.0f, imZ - 9.0f);
-                        glVertex3f(imX - 4.8f, imY + 24.0f, imZ - 9.0f); glVertex3f(imX - 1.5f, imY + 14.0f, imZ - 6.0f);
-
-                        glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f); glVertex3f(imX + 3.5f, imY + 4.5f, imZ - 1.5f);
-                        glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f); glVertex3f(imX - 3.0f, imY + 3.5f, imZ + 2.0f);
-                        glVertex3f(imX - 1.9f, imY + 10.0f, imZ - 1.5f); glVertex3f(imX + 1.0f, imY + 6.0f, imZ - 4.0f);
-                        glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f); glVertex3f(imX + 7.5f, imY + 9.0f, imZ + 1.0f);
+                    int numBolts = 4 + (rand() % 4); // 4 to 7 main lightning bolts per frame
+                    for (int i = 0; i < numBolts; i++) {
+                        float r = 0.4f + (rand() % 30) / 100.0f; // 0.4 to 0.69
+                        float g = 0.8f + (rand() % 20) / 100.0f; // 0.8 to 0.99
+                        float b = 1.0f;
+                        float a = 0.6f + (rand() % 40) / 100.0f; // 0.6 to 0.99
+                        glColor4f(r, g, b, a);
+                        
+                        // Top starting point
+                        float topX = imX + (rand() % 100 - 50) * 0.1f;
+                        float topZ = imZ + (rand() % 100 - 50) * 0.1f;
+                        float topY = imY + 40.0f + (rand() % 15);
+                        
+                        // Target point on Iron Man's body
+                        float botX = imX + (rand() % 40 - 20) * 0.1f;
+                        float botZ = imZ + (rand() % 40 - 20) * 0.1f;
+                        float botY = imY + 5.0f + (rand() % 10);
+                        
+                        float curX = topX, curY = topY, curZ = topZ;
+                        
+                        int segments = 10 + (rand() % 6); // 10 to 15 segments per bolt
+                        for (int s = 0; s < segments; s++) {
+                            float t = (float)(s + 1) / segments;
+                            
+                            // Interpolate and add noise
+                            float nextX = topX + (botX - topX) * t + (rand() % 60 - 30) * 0.1f;
+                            float nextZ = topZ + (botZ - topZ) * t + (rand() % 60 - 30) * 0.1f;
+                            float nextY = topY + (botY - topY) * t;
+                            
+                            glVertex3f(curX, curY, curZ);
+                            glVertex3f(nextX, nextY, nextZ);
+                            
+                            // Branching
+                            if (rand() % 3 == 0) {
+                                float branchX = nextX + (rand() % 80 - 40) * 0.1f;
+                                float branchZ = nextZ + (rand() % 80 - 40) * 0.1f;
+                                float branchY = nextY - (rand() % 40) * 0.1f;
+                                glVertex3f(nextX, nextY, nextZ);
+                                glVertex3f(branchX, branchY, branchZ);
+                            }
+                            
+                            curX = nextX;
+                            curY = nextY;
+                            curZ = nextZ;
+                        }
+                    }
                     glEnd();
 
                     if (caAttackTimer <= 104 && caAttackTimer > 96) {
