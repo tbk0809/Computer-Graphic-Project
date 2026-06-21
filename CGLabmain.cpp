@@ -241,9 +241,13 @@ void myViewingInit() {
 }
 
 void myLightingInit() {
-    static GLfloat ambient[]  = {0,0,0,1}, diffuse[]  = {1,1,1,1};
-    static GLfloat specular[] = {1,1,1,1}, specref[]  = {1,1,1,1};
-    static GLfloat position[] = {10,10,10,1};
+    // Ambient: raise to 0.4 so scene never goes pitch-black regardless of camera distance
+    static GLfloat ambient[]  = {0.4f, 0.4f, 0.4f, 1.0f};
+    static GLfloat diffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f};
+    static GLfloat specular[] = {0.8f, 0.8f, 0.8f, 1.0f};
+    static GLfloat specref[]  = {1.0f, 1.0f, 1.0f, 1.0f};
+    // w=0 makes this a directional (infinite) light - distance to camera doesn't matter
+    static GLfloat position[] = {1.0f, 1.5f, 1.0f, 0.0f};
     short shininess = 128;
     glDisable(GL_LIGHTING);
     glLightfv(GL_LIGHT0, GL_AMBIENT,  ambient);
@@ -298,11 +302,6 @@ void myWelcome() {
     cout<<"|   Arrow keys               => rotate world                    |\n";
     cout<<"|   HOME                     => restore defaults                |\n";
     cout<<"|   ESC                      => exit                            |\n";
-    cout<<"|                                                               |\n";
-    cout<<"| Captain America Hands (split model only):                     |\n";
-    cout<<"|   1  => toggle auto-swing on/off (swings during attack only)  |\n";
-    cout<<"|   2  => manual arm angle -5 deg (when not attacking)          |\n";
-    cout<<"|   3  => manual arm angle +5 deg (when not attacking)          |\n";
     cout<<"|                                                               |\n";
     cout<<"| Camera:                                                       |\n";
     cout<<"|   B/V => camera left/right  N/M => camera down/up             |\n";

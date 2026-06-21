@@ -522,47 +522,55 @@ void MyVirtualWorld::draw()
                     glDisable(GL_LIGHTING); glDisable(GL_TEXTURE_2D);
                     glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-                    float jx = sin(timenew * 3.1f) * 0.6f;
-                    float jz = cos(timenew * 2.7f) * 0.6f;
-
+                    // Realistic Lightning: multiple lines appear and disappear dynamically
                     glLineWidth(3.0f);
-                    glColor4f(0.5f, 0.9f, 1.0f, 0.9f);
                     glBegin(GL_LINES);
-                        glVertex3f(imX - 1.0f + jx, imY + 30.0f, imZ - 0.5f + jz); glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f);
-                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f);
-                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f);
-                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f);
-                        glVertex3f(imX - 1.9f, imY + 12.5f, imZ - 1.5f); glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f);
-
-                        glVertex3f(imX + 2.3f, imY + 25.5f, imZ + 1.6f); glVertex3f(imX + 5.0f, imY + 21.5f, imZ - 1.8f);
-                        glVertex3f(imX - 2.8f, imY + 21.0f, imZ - 1.2f); glVertex3f(imX - 5.2f, imY + 17.5f, imZ + 2.1f);
-                        glVertex3f(imX + 1.6f, imY + 17.0f, imZ + 0.9f); glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f);
-
-                        glVertex3f(imX + 3.0f, imY + 45.0f, imZ + 2.0f); glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f);
-                        glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f); glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f);
-                        glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f); glVertex3f(imX + 15.0f, imY + 8.0f, imZ + 2.0f);
-
-                        glVertex3f(imX - 3.5f, imY + 30.0f, imZ - 2.5f); glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f);
-                        glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f); glVertex3f(imX - 14.0f, imY + 10.0f, imZ + 2.0f);
-
-                        glVertex3f(imX + 2.0f, imY + 18.0f, imZ + 1.5f); glVertex3f(imX + 7.0f, imY + 12.0f, imZ - 2.0f);
-                        glVertex3f(imX - 1.9f, imY + 10.0f, imZ - 1.5f); glVertex3f(imX - 6.0f, imY + 4.0f, imZ + 1.0f);
-
-                        glVertex3f(imX + 9.0f, imY + 35.0f, imZ - 3.0f); glVertex3f(imX + 13.5f, imY + 30.0f, imZ + 1.5f);
-                        glVertex3f(imX + 12.0f, imY + 22.0f, imZ - 1.0f); glVertex3f(imX + 17.0f, imY + 18.0f, imZ - 3.5f);
-                        glVertex3f(imX - 10.0f, imY + 22.0f, imZ + 4.0f); glVertex3f(imX - 15.0f, imY + 18.0f, imZ - 1.0f);
-                        glVertex3f(imX - 14.0f, imY + 10.0f, imZ + 2.0f); glVertex3f(imX - 17.5f, imY + 4.0f, imZ + 5.0f);
-
-                        glVertex3f(imX + 0.5f, imY + 38.0f, imZ + 3.0f); glVertex3f(imX + 4.5f, imY + 28.0f, imZ + 8.0f);
-                        glVertex3f(imX + 4.5f, imY + 28.0f, imZ + 8.0f); glVertex3f(imX + 2.0f, imY + 16.0f, imZ + 6.5f);
-
-                        glVertex3f(imX - 0.8f, imY + 33.0f, imZ - 4.0f); glVertex3f(imX - 4.8f, imY + 24.0f, imZ - 9.0f);
-                        glVertex3f(imX - 4.8f, imY + 24.0f, imZ - 9.0f); glVertex3f(imX - 1.5f, imY + 14.0f, imZ - 6.0f);
-
-                        glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f); glVertex3f(imX + 3.5f, imY + 4.5f, imZ - 1.5f);
-                        glVertex3f(imX + 0.2f, imY + 7.0f, imZ + 0.2f); glVertex3f(imX - 3.0f, imY + 3.5f, imZ + 2.0f);
-                        glVertex3f(imX - 1.9f, imY + 10.0f, imZ - 1.5f); glVertex3f(imX + 1.0f, imY + 6.0f, imZ - 4.0f);
-                        glVertex3f(imX + 4.4f, imY + 13.0f, imZ - 1.1f); glVertex3f(imX + 7.5f, imY + 9.0f, imZ + 1.0f);
+                    int numBolts = 4 + (rand() % 4); // 4 to 7 main lightning bolts per frame
+                    for (int i = 0; i < numBolts; i++) {
+                        float r = 0.4f + (rand() % 30) / 100.0f; // 0.4 to 0.69
+                        float g = 0.8f + (rand() % 20) / 100.0f; // 0.8 to 0.99
+                        float b = 1.0f;
+                        float a = 0.6f + (rand() % 40) / 100.0f; // 0.6 to 0.99
+                        glColor4f(r, g, b, a);
+                        
+                        // Top starting point
+                        float topX = imX + (rand() % 100 - 50) * 0.1f;
+                        float topZ = imZ + (rand() % 100 - 50) * 0.1f;
+                        float topY = imY + 40.0f + (rand() % 15);
+                        
+                        // Target point on Iron Man's body
+                        float botX = imX + (rand() % 40 - 20) * 0.1f;
+                        float botZ = imZ + (rand() % 40 - 20) * 0.1f;
+                        float botY = imY + 5.0f + (rand() % 10);
+                        
+                        float curX = topX, curY = topY, curZ = topZ;
+                        
+                        int segments = 10 + (rand() % 6); // 10 to 15 segments per bolt
+                        for (int s = 0; s < segments; s++) {
+                            float t = (float)(s + 1) / segments;
+                            
+                            // Interpolate and add noise
+                            float nextX = topX + (botX - topX) * t + (rand() % 60 - 30) * 0.1f;
+                            float nextZ = topZ + (botZ - topZ) * t + (rand() % 60 - 30) * 0.1f;
+                            float nextY = topY + (botY - topY) * t;
+                            
+                            glVertex3f(curX, curY, curZ);
+                            glVertex3f(nextX, nextY, nextZ);
+                            
+                            // Branching
+                            if (rand() % 3 == 0) {
+                                float branchX = nextX + (rand() % 80 - 40) * 0.1f;
+                                float branchZ = nextZ + (rand() % 80 - 40) * 0.1f;
+                                float branchY = nextY - (rand() % 40) * 0.1f;
+                                glVertex3f(nextX, nextY, nextZ);
+                                glVertex3f(branchX, branchY, branchZ);
+                            }
+                            
+                            curX = nextX;
+                            curY = nextY;
+                            curZ = nextZ;
+                        }
+                    }
                     glEnd();
 
                     if (caAttackTimer <= 104 && caAttackTimer > 96) {
@@ -639,55 +647,100 @@ void MyVirtualWorld::draw()
             if (caAttackTimer <= 0) { caAttackingHammer = false; caAttackingSuper = false; if (imHP > 0) currentTurn = 1; }
         }
 
-        // 6c. Captain America Super Activation Lightning
+        // 6c. Captain America Super Activation Lightning (Realistic procedural bolts)
         if (caAttackingSuper && caAttackTimer > 180) {
             glDisable(GL_LIGHTING); glDisable(GL_TEXTURE_2D);
             glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-            float jx = sin(timenew * 4.0f) * 0.4f;
-            float jz = cos(timenew * 3.4f) * 0.4f;
-
-            glLineWidth(4.0f);
-            glColor4f(0.1f, 0.3f, 1.0f, 1.0f);
+            // Realistic Lightning: multiple bolts from sky to Captain America
+            glLineWidth(3.0f);
             glBegin(GL_LINES);
-                glVertex3f(animCaX - 2.0f + jx, animCaY + 80.0f, animCaZ - 1.0f + jz); glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f);
-                glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f); glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f);
-                glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f); glVertex3f(animCaX - 1.0f, animCaY + 22.0f, animCaZ + 0.5f);
+            int numBolts = 4 + (rand() % 4); // 4 to 7 main lightning bolts per frame
+            for (int i = 0; i < numBolts; i++) {
+                float r = 0.4f + (rand() % 30) / 100.0f; // 0.4 to 0.69
+                float g = 0.8f + (rand() % 20) / 100.0f; // 0.8 to 0.99
+                float b = 1.0f;
+                float a = 0.6f + (rand() % 40) / 100.0f; // 0.6 to 0.99
+                glColor4f(r, g, b, a);
 
-                glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f); glVertex3f(animCaX + 10.0f, animCaY + 40.0f, animCaZ - 4.0f);
-                glVertex3f(animCaX + 10.0f, animCaY + 40.0f, animCaZ - 4.0f); glVertex3f(animCaX + 5.0f, animCaY + 25.0f, animCaZ - 1.0f);
+                // Top starting point (sky above Captain America)
+                float topX = animCaX + (rand() % 100 - 50) * 0.1f;
+                float topZ = animCaZ + (rand() % 100 - 50) * 0.1f;
+                float topY = animCaY + 40.0f + (rand() % 15);
 
-                glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f); glVertex3f(animCaX - 12.0f, animCaY + 25.0f, animCaZ + 3.0f);
-                glVertex3f(animCaX - 12.0f, animCaY + 25.0f, animCaZ + 3.0f); glVertex3f(animCaX - 8.0f, animCaY + 12.0f, animCaZ + 2.0f);
+                // Target point on Captain America's body
+                float botX = animCaX + (rand() % 40 - 20) * 0.1f;
+                float botZ = animCaZ + (rand() % 40 - 20) * 0.1f;
+                float botY = animCaY + 5.0f + (rand() % 10);
 
-                glVertex3f(animCaX - 6.0f, animCaY + 2.0f, animCaZ + 5.0f); glVertex3f(animCaX + 4.0f, animCaY + 8.0f, animCaZ - 3.0f);
-                glVertex3f(animCaX + 7.0f, animCaY + 4.0f, animCaZ - 6.0f); glVertex3f(animCaX - 5.0f, animCaY + 14.0f, animCaZ + 4.0f);
+                float curX = topX, curY = topY, curZ = topZ;
 
-                glVertex3f(animCaX + 6.0f, animCaY + 85.0f, animCaZ + 4.0f); glVertex3f(animCaX + 2.0f, animCaY + 60.0f, animCaZ - 1.0f);
-                glVertex3f(animCaX + 2.0f, animCaY + 60.0f, animCaZ - 1.0f); glVertex3f(animCaX + 6.5f, animCaY + 38.0f, animCaZ + 3.0f);
-                glVertex3f(animCaX + 6.5f, animCaY + 38.0f, animCaZ + 3.0f); glVertex3f(animCaX + 2.5f, animCaY + 20.0f, animCaZ - 0.5f);
+                int segments = 10 + (rand() % 6); // 10 to 15 segments per bolt
+                for (int s = 0; s < segments; s++) {
+                    float t = (float)(s + 1) / segments;
 
-                glVertex3f(animCaX + 3.0f, animCaY + 55.0f, animCaZ + 2.0f); glVertex3f(animCaX - 4.0f, animCaY + 48.0f, animCaZ + 6.0f);
-                glVertex3f(animCaX - 3.5f, animCaY + 35.0f, animCaZ - 2.5f); glVertex3f(animCaX + 4.0f, animCaY + 28.0f, animCaZ - 6.0f);
-                glVertex3f(animCaX + 10.0f, animCaY + 40.0f, animCaZ - 4.0f); glVertex3f(animCaX + 14.0f, animCaY + 30.0f, animCaZ + 1.0f);
-                glVertex3f(animCaX - 12.0f, animCaY + 25.0f, animCaZ + 3.0f); glVertex3f(animCaX - 16.0f, animCaY + 15.0f, animCaZ - 1.0f);
+                    // Interpolate and add noise
+                    float nextX = topX + (botX - topX) * t + (rand() % 60 - 30) * 0.1f;
+                    float nextZ = topZ + (botZ - topZ) * t + (rand() % 60 - 30) * 0.1f;
+                    float nextY = topY + (botY - topY) * t;
 
-                glVertex3f(animCaX - 3.0f, animCaY + 6.0f, animCaZ - 4.0f); glVertex3f(animCaX + 2.0f, animCaY + 16.0f, animCaZ + 5.0f);
-                glVertex3f(animCaX + 5.0f, animCaY + 10.0f, animCaZ + 2.0f); glVertex3f(animCaX - 4.0f, animCaY + 2.0f, animCaZ - 5.0f);
-                glVertex3f(animCaX - 1.0f, animCaY + 18.0f, animCaZ - 3.0f); glVertex3f(animCaX + 6.0f, animCaY + 6.0f, animCaZ + 4.0f);
+                    glVertex3f(curX, curY, curZ);
+                    glVertex3f(nextX, nextY, nextZ);
+
+                    // Branching
+                    if (rand() % 3 == 0) {
+                        float branchX = nextX + (rand() % 80 - 40) * 0.1f;
+                        float branchZ = nextZ + (rand() % 80 - 40) * 0.1f;
+                        float branchY = nextY - (rand() % 40) * 0.1f;
+                        glVertex3f(nextX, nextY, nextZ);
+                        glVertex3f(branchX, branchY, branchZ);
+                    }
+
+                    curX = nextX;
+                    curY = nextY;
+                    curZ = nextZ;
+                }
+            }
             glEnd();
 
+            // Flickering flash sphere and energy burst on Captain America
             if ((int)caAttackTimer % 8 > 3) {
-                glLineWidth(6.0f);
-                glColor4f(0.2f, 0.4f, 1.0f, 0.85f);
-                glBegin(GL_LINES);
-                    glVertex3f(animCaX - 14.0f, animCaY + 0.5f, animCaZ); glVertex3f(animCaX + 14.0f, animCaY + 0.5f, animCaZ);
-                    glVertex3f(animCaX, animCaY + 0.5f, animCaZ - 14.0f); glVertex3f(animCaX, animCaY + 0.5f, animCaZ + 14.0f);
-                    glVertex3f(animCaX - 10.0f, animCaY + 0.5f, animCaZ + 10.0f); glVertex3f(animCaX + 10.0f, animCaY + 0.5f, animCaZ - 10.0f);
-                    glVertex3f(animCaX - 10.0f, animCaY + 0.5f, animCaZ - 10.0f); glVertex3f(animCaX + 10.0f, animCaY + 0.5f, animCaZ + 10.0f);
+                float flicker = 0.75f + (rand() % 25) / 100.0f;
+                glColor4f(0.2f, 0.4f, 1.0f, flicker);
+                glPushMatrix();
+                    glTranslatef(animCaX, animCaY + 7.0f, animCaZ);
+                    glutSolidSphere(6.0f, 24, 12);
+                glPopMatrix();
 
-                    glVertex3f(animCaX - 12.0f, animCaY + 0.5f, animCaZ + 6.0f); glVertex3f(animCaX + 12.0f, animCaY + 0.5f, animCaZ - 6.0f);
-                    glVertex3f(animCaX - 6.0f, animCaY + 0.5f, animCaZ + 12.0f); glVertex3f(animCaX + 6.0f, animCaY + 0.5f, animCaZ - 12.0f);
+                glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
+                glPushMatrix();
+                    glTranslatef(animCaX, animCaY + 7.0f, animCaZ);
+                    glutSolidSphere(2.5f + (rand() % 10) / 10.0f, 16, 12);
+                glPopMatrix();
+
+                // Energy cross lines
+                glLineWidth(6.0f);
+                glColor4f(0.1f, 0.3f, 1.0f, 0.95f);
+                glBegin(GL_LINES);
+                    glVertex3f(animCaX - 12.0f, animCaY + 7.0f, animCaZ); glVertex3f(animCaX + 12.0f, animCaY + 7.0f, animCaZ);
+                    glVertex3f(animCaX, animCaY - 3.0f, animCaZ); glVertex3f(animCaX, animCaY + 18.0f, animCaZ);
+                    glVertex3f(animCaX - 8.0f, animCaY + 1.0f, animCaZ + 5.0f); glVertex3f(animCaX + 8.0f, animCaY + 15.0f, animCaZ - 5.0f);
+                    glVertex3f(animCaX - 8.0f, animCaY + 15.0f, animCaZ - 5.0f); glVertex3f(animCaX + 8.0f, animCaY + 1.0f, animCaZ + 5.0f);
+
+                    glVertex3f(animCaX - 10.0f, animCaY + 7.0f, animCaZ + 9.0f); glVertex3f(animCaX + 10.0f, animCaY + 7.0f, animCaZ - 9.0f);
+                    glVertex3f(animCaX - 10.0f, animCaY + 7.0f, animCaZ - 9.0f); glVertex3f(animCaX + 10.0f, animCaY + 7.0f, animCaZ + 9.0f);
+                    glVertex3f(animCaX - 4.0f, animCaY - 2.0f, animCaZ - 4.0f); glVertex3f(animCaX + 4.0f, animCaY + 16.0f, animCaZ + 4.0f);
+                    glVertex3f(animCaX + 4.0f, animCaY - 2.0f, animCaZ - 4.0f); glVertex3f(animCaX - 4.0f, animCaY + 16.0f, animCaZ + 4.0f);
+                glEnd();
+
+                // Energy ring around Captain America
+                glLineWidth(2.5f);
+                glColor4f(0.3f, 0.6f, 1.0f, 0.6f);
+                glBegin(GL_LINE_LOOP);
+                    for (int i = 0; i < 16; i++) {
+                        float ang = i * (360.0f / 16) * 3.14159265f / 180.0f;
+                        glVertex3f(animCaX + cos(ang) * 9.0f, animCaY + 7.1f, animCaZ + sin(ang) * 9.0f);
+                    }
                 glEnd();
             }
 
@@ -771,11 +824,12 @@ void MyVirtualWorld::draw()
                 // LEFT HAND (Holds Hammer after swap)
                 // ==========================================
                 glPushMatrix();
-                    glTranslatef(-2.35f, 18.8f, -0.35f);
+                    glTranslatef(-1.95f, 18.8f, -0.35f);
                     if (caAttackingHammer || caAttackingSuper) glRotatef(leftArmPitch, 1.0f, 0.0f, 0.0f);
                     else glRotatef(captainHandAngle, 0.0f, 0.0f, 1.0f);
                     glTranslatef(2.35f, -18.8f, 0.35f);
 
+                    // Shift the left arm slightly inwards to close the gap with the body
                     captainLeftHand.draw();
 
                     bool hammerFlying = ((caAttackingHammer || caAttackingSuper) && caAttackTimer <= 180 && caAttackTimer > 40);
@@ -808,7 +862,7 @@ void MyVirtualWorld::draw()
                 // RIGHT HAND (Holds Shield to block)
                 // ==========================================
                 glPushMatrix();
-                    glTranslatef(2.35f, 18.8f, -0.35f);
+                    glTranslatef(1.85f, 18.8f, -0.35f);
                     if (caDefendingAnim) {
                         glRotatef(rightArmYaw, 0.0f, 1.0f, 0.0f);   // Swing deep across chest
                         glRotatef(rightArmPitch, 1.0f, 0.0f, 0.0f); // Lift arm up
